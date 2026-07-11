@@ -9,6 +9,7 @@
 - `app/page.tsx`: se agrego mapa embebido de Google Maps para `Chacabuco 56, Charata, Chaco, Argentina`.
 - `components/footer.tsx`: footer oscuro reorganizado con marca, secciones y legal.
 - Control simple: `git diff --check` OK; `rg` sin marcas viejas visibles en `app`/`components` principales. No se corrio build/type-check local por regla de no instalar dependencias en disco D.
+- Deploy manual posterior con Vercel CLI porque el deploy automatico no habia tomado el commit `be39e08`. Produccion actual: `https://cr-jorge-bade.vercel.app`, deployment `dpl_FqFGJcyERNUXT7mdX9uUneAdmrPu`, status Ready. Verificacion HTTP 200 con texto `tomar mejores decisiones`.
 
 ## Actualizacion 2026-07-11 - Web contable y nuevo proyecto Vercel
 
