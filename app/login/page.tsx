@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, AlertCircle, Scale } from 'lucide-react';
+import { Loader2, AlertCircle, Calculator } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function LoginPage() {
@@ -56,11 +56,11 @@ export default function LoginPage() {
                 <CardHeader className="space-y-1 text-center pb-8 pt-8">
                     <div className="flex justify-center mb-6">
                         <div className="bg-accent/20 p-4 rounded-full">
-                            <Scale className="w-12 h-12 text-accent" />
+                            <Calculator className="w-12 h-12 text-accent" />
                         </div>
                     </div>
                     <CardTitle className="text-3xl font-serif font-bold tracking-tight text-foreground">
-                        Dra. Lidia Casasola
+                        Cr. Jorge Ricardo Bade
                     </CardTitle>
                     <CardDescription className="text-muted-foreground text-lg">
                         Panel de Administración
@@ -79,7 +79,7 @@ export default function LoginPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="doctora@casasola.com"
+                            placeholder="admin@jorgericardobade.com.ar"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required

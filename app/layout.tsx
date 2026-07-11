@@ -6,27 +6,29 @@ import { WhatsAppButton } from '@/components/whatsapp-button'
 import './globals.css'
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: '--font-inter'
+  subsets: ['latin'],
+  variable: '--font-inter',
 })
 
 export const metadata: Metadata = {
-  title: 'Dra. Lidia Casasola - Abogada Especialista en Derecho Civil',
-  description: 'Abogada experta en Derecho Civil, Sucesiones y Familia. Más de 20 años de experiencia. Asesoramiento legal profesional en Charata, Chaco.',
-  keywords: 'Abogada, Derecho Civil, Sucesiones, Divorcios, Familia, Contratos, Lidia Casasola, Charata, Chaco',
+  title: 'Cr. Jorge Ricardo Bade - Contador Publico',
+  description:
+    'Estudio contable en Charata, Chaco. Asesoramiento impositivo, contabilidad, estados contables, sueldos y gestion laboral para empresas, emprendedores y personas.',
+  keywords:
+    'Contador Publico, Estudio Contable, Impuestos, ARCA, Monotributo, IVA, Ganancias, Sueldos, Empresas, Charata, Chaco, Jorge Ricardo Bade',
   generator: 'v0.app',
   openGraph: {
-    title: 'Dra. Lidia Casasola - Abogada Especialista en Derecho Civil',
-    description: 'Abogada experta en Derecho Civil, Sucesiones y Familia. Más de 20 años de experiencia.',
-    url: 'https://dra-casasola.vercel.app',
-    siteName: 'Dra. Lidia Casasola',
+    title: 'Cr. Jorge Ricardo Bade - Contador Publico',
+    description: 'Soluciones contables, impositivas y financieras para tomar mejores decisiones.',
+    url: 'https://cr-jorge-bade.vercel.app',
+    siteName: 'Cr. Jorge Ricardo Bade',
     locale: 'es_AR',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Dra. Lidia Casasola - Abogada',
-    description: 'Abogada experta en Derecho Civil, Sucesiones y Familia.',
+    title: 'Cr. Jorge Ricardo Bade - Contador Publico',
+    description: 'Asesoramiento impositivo, contable y laboral para empresas, emprendedores y personas.',
   },
   icons: {
     icon: [

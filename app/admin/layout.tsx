@@ -13,7 +13,7 @@ import {
     Menu,
     KanbanSquare,
     UserCog,
-    Scale
+    Calculator
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -47,9 +47,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <aside className={`bg-primary text-primary-foreground w-64 fixed h-full transition-transform z-30 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
                 <div className="p-6 border-b border-primary-foreground/20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Scale className="h-8 w-8 text-accent" />
+                        <Calculator className="h-8 w-8 text-accent" />
                         <div>
-                            <h2 className="text-lg font-serif font-bold text-primary-foreground leading-tight">Dra. Casasola</h2>
+                            <h2 className="text-lg font-serif font-bold text-primary-foreground leading-tight">Cr. Jorge Bade</h2>
                             <span className="text-xs text-accent">Panel Admin</span>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <Link href="/admin/news">
                         <div className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive('/admin/news') ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground'}`}>
                             <Newspaper size={20} />
-                            Noticias Legales
+                            Novedades
                         </div>
                     </Link>
 
