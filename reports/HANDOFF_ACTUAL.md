@@ -1,5 +1,15 @@
 # Handoff actual - Cr. Jorge Ricardo Bade
 
+## Actualizacion 2026-07-11 - Diseno Stitch aplicado
+
+- Se aplico el rediseño visual estilo Stitch indicado por el usuario sobre la home publica.
+- Identidad visual: azul marino profundo, fondos blancos/grises claros y acentos verde esmeralda.
+- `components/header.tsx`: header compacto similar al mockup, navegacion corta y CTA `Solicitar Consulta`.
+- `app/page.tsx`: hero modernizado con escena financiera visual, bloque de informacion ordenada, secciones de servicios en cards, empresas/emprendedores, personas, FAQ tipo acordeon y contacto.
+- `app/page.tsx`: se agrego mapa embebido de Google Maps para `Chacabuco 56, Charata, Chaco, Argentina`.
+- `components/footer.tsx`: footer oscuro reorganizado con marca, secciones y legal.
+- Control simple: `git diff --check` OK; `rg` sin marcas viejas visibles en `app`/`components` principales. No se corrio build/type-check local por regla de no instalar dependencias en disco D.
+
 ## Actualizacion 2026-07-11 - Web contable y nuevo proyecto Vercel
 
 - Se adapto la web publica desde la identidad historica `dra.casasola` hacia `Cr. Jorge Ricardo Bade - Contador Publico`.

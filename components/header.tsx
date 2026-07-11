@@ -4,15 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
-
 const links = [
   ['Inicio', '/#inicio'],
-  ['El Estudio', '/#el-estudio'],
   ['Servicios', '/#servicios'],
-  ['Empresas y Emprendedores', '/#empresas'],
-  ['Personas', '/#personas'],
-  ['Preguntas Frecuentes', '/#preguntas-frecuentes'],
+  ['Empresas', '/#empresas'],
+  ['Individuos', '/#personas'],
+  ['Preguntas', '/#preguntas-frecuentes'],
   ['Contacto', '/#contacto'],
 ]
 
@@ -20,59 +17,64 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-lg font-semibold tracking-tight text-primary sm:text-xl">
-            Cr. Jorge Ricardo Bade
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="text-sm font-semibold tracking-tight text-slate-950 sm:text-base">
+          Cr. Jorge Ricardo Bade
+        </Link>
 
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-center gap-5">
-              {links.slice(0, -1).map(([label, href]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-sm font-medium text-foreground transition-colors hover:text-gray-500"
-                >
-                  {label}
-                </Link>
-              ))}
-              <Button asChild className="rounded-full bg-gray-950 text-white hover:bg-gray-800">
-                <Link href="/#contacto">Solicitar una consulta</Link>
-              </Button>
-            </div>
-          </div>
+        <nav className="hidden items-center gap-7 md:flex">
+          {links.map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              className="border-b border-transparent py-1 text-xs font-medium text-slate-600 transition-colors hover:border-emerald-500 hover:text-slate-950"
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
 
-          <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
+        <Link
+          href="/#contacto"
+          className="hidden bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-600 md:inline-flex"
+        >
+          Solicitar Consulta
+        </Link>
+
+        <button
+          type="button"
+          className="inline-flex h-9 w-9 items-center justify-center border border-slate-200 text-slate-900 md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Abrir menu"
+        >
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </div>
+
+      {mobileMenuOpen && (
+        <div className="border-t border-slate-200 bg-white px-4 py-4 md:hidden">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3">
+            {links.map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm font-medium text-slate-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {label}
+              </Link>
+            ))}
+            <Link
+              href="/#contacto"
+              className="mt-2 bg-slate-950 px-4 py-2 text-center text-xs font-semibold text-white"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Solicitar Consulta
+            </Link>
           </div>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden pb-4">
-            <div className="flex flex-col gap-4">
-              {links.map(([label, href]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-sm font-medium text-foreground transition-colors hover:text-gray-500"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {label}
-                </Link>
-              ))}
-              <Button asChild className="w-full rounded-full bg-gray-950 text-white hover:bg-gray-800">
-                <Link href="/#contacto" onClick={() => setMobileMenuOpen(false)}>
-                  Solicitar una consulta
-                </Link>
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    </nav>
+      )}
+    </header>
   )
 }
