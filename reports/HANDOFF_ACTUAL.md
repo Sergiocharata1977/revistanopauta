@@ -7,7 +7,7 @@
 - `lib/services.ts`: `UsersService.create` ahora crea primero la cuenta en Firebase Authentication via Identity Toolkit REST y luego guarda el perfil en `users/{uid}`.
 - `app/setup/page.tsx`: el alta inicial ahora tambien crea el perfil Firestore del administrador y actualiza el placeholder al dominio del contador.
 - `firestore.rules`: se habilito gestion de perfiles `users` para usuarios autenticados del panel. Reglas desplegadas con `firebase deploy --only firestore:rules --project dra-casasola-web` OK.
-- Validacion local liviana: `git diff --check` OK, solo warnings CRLF. Falta validar con build remoto Vercel al deploy.
+- Validacion: `git diff --check` OK, solo warnings CRLF. Deploy Vercel produccion OK, build remoto compilo y aliaso `https://cr-jorge-bade.vercel.app`.
 
 ## Actualizacion 2026-07-15 - Boton login en header publico
 
