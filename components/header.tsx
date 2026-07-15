@@ -35,12 +35,20 @@ export function Header() {
           ))}
         </nav>
 
-        <Link
-          href="/#contacto"
-          className="hidden bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-600 md:inline-flex"
-        >
-          Solicitar Consulta
-        </Link>
+        <div className="hidden items-center gap-2 md:flex">
+          <Link
+            href="/login"
+            className="border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 transition-colors hover:border-emerald-500 hover:text-emerald-700"
+          >
+            Login
+          </Link>
+          <Link
+            href="/#contacto"
+            className="bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-600"
+          >
+            Solicitar Consulta
+          </Link>
+        </div>
 
         <button
           type="button"
@@ -71,6 +79,13 @@ export function Header() {
               onClick={() => setMobileMenuOpen(false)}
             >
               Solicitar Consulta
+            </Link>
+            <Link
+              href="/login"
+              className="border border-slate-300 bg-white px-4 py-2 text-center text-xs font-semibold text-slate-800"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login
             </Link>
           </div>
         </div>

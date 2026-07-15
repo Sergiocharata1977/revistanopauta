@@ -1,5 +1,11 @@
 # Handoff actual - Cr. Jorge Ricardo Bade
 
+## Actualizacion 2026-07-15 - Boton login en header publico
+
+- Se agrego acceso visible `Login` en `components/header.tsx`, apuntando a `/login`.
+- En desktop aparece como boton secundario junto a `Solicitar Consulta`; en mobile aparece dentro del menu desplegable.
+- Validacion liviana: `git diff --check` OK. Deploy manual requerido en Vercel porque el auto deploy no siempre toma los pushes en este proyecto.
+
 ## Actualizacion 2026-07-15 - Sistema de logo recuperado
 
 - Se incorporo un componente reutilizable `components/brand-logo.tsx` para centralizar la marca del estudio.
