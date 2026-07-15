@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { UsersService } from '@/lib/services';
 import type { User } from '@/lib/types';
+import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,11 +34,13 @@ import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export default function UsersPage() {
+    const { user: authUser } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -45,16 +48,22 @@ export default function UsersPage() {
         displayName: '',
         role: 'viewer' as User['role'],
         phone: '',
+        password: '',
         isActive: true,
     });
 
     useEffect(() => {
-        loadUsers();
-    }, []);
+        if (authUser) {
+            loadUsers();
+        }
+    }, [authUser]);
 
     const loadUsers = async () => {
         try {
             setLoading(true);
+            if (authUser) {
+                await UsersService.ensureProfileForAuthUser(authUser);
+            }
             const data = await UsersService.getAll();
             setUsers(data);
         } catch (error) {
@@ -71,8 +80,10 @@ export default function UsersPage() {
             displayName: '',
             role: 'viewer',
             phone: '',
+            password: '',
             isActive: true,
         });
+        setError(null);
         setDialogOpen(true);
     };
 
@@ -83,25 +94,33 @@ export default function UsersPage() {
             displayName: user.displayName || '',
             role: user.role,
             phone: user.phone || '',
+            password: '',
             isActive: user.isActive,
         });
+        setError(null);
         setDialogOpen(true);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+        setError(null);
 
         try {
             if (editingUser) {
-                await UsersService.update(editingUser.id, formData);
+                const { password, ...profileData } = formData;
+                await UsersService.update(editingUser.id, profileData);
             } else {
+                if (formData.password.length < 6) {
+                    throw new Error('La contrasena debe tener al menos 6 caracteres.');
+                }
                 await UsersService.create(formData);
             }
             setDialogOpen(false);
             loadUsers();
         } catch (error) {
             console.error('Error saving user:', error);
+            setError(error instanceof Error ? error.message : 'No se pudo guardar el usuario.');
         } finally {
             setSaving(false);
         }
@@ -115,6 +134,7 @@ export default function UsersPage() {
             loadUsers();
         } catch (error) {
             console.error('Error deleting user:', error);
+            alert('No se pudo eliminar el usuario.');
         }
     };
 
@@ -147,6 +167,11 @@ export default function UsersPage() {
                             </DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4">
+                            {error && (
+                                <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                                    {error}
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Input
@@ -157,6 +182,19 @@ export default function UsersPage() {
                                     required
                                 />
                             </div>
+                            {!editingUser && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Contrasena inicial</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        required
+                                        minLength={6}
+                                    />
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 <Label htmlFor="displayName">Nombre</Label>
                                 <Input

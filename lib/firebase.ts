@@ -5,7 +5,7 @@ import { getStorage } from 'firebase/storage';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
 // Firebase config for Dra. Lidia Casasola project
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyArvoaEjaJpGNwkUbg3I5Cd68WovHOQGgo",
     authDomain: "dra-casasola-web.firebaseapp.com",
     projectId: "dra-casasola-web",

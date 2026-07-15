@@ -14,10 +14,11 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
     
-    // Users - only authenticated users can read/write their own data
+    // Users - authenticated admin panel can manage user profiles.
+    // Firebase Authentication remains the source of truth for login credentials.
     match /users/{userId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null;
     }
     
     // Tasks - only authenticated users

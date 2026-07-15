@@ -4,6 +4,7 @@ import {
     getDocs,
     getDoc,
     addDoc,
+    setDoc,
     updateDoc,
     deleteDoc,
     query,
@@ -12,16 +13,63 @@ import {
     Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { firebaseConfig } from './firebase';
 import type { User, News, Event, Collaborator, Task } from './types';
+import type { User as FirebaseAuthUser } from 'firebase/auth';
 
 // ============ USERS SERVICE ============
 const usersCollection = collection(db, 'users');
+
+type CreateUserInput = Omit<User, 'id' | 'createdAt' | 'updatedAt'> & {
+    password: string;
+};
+
+async function createFirebaseAuthUser(email: string, password: string): Promise<string> {
+    const response = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email,
+                password,
+                returnSecureToken: true,
+            }),
+        }
+    );
+
+    const payload = await response.json();
+
+    if (!response.ok) {
+        const message = payload?.error?.message || 'No se pudo crear el usuario en Firebase Auth';
+        throw new Error(message);
+    }
+
+    return payload.localId;
+}
 
 export const UsersService = {
     async getAll(): Promise<User[]> {
         const q = query(usersCollection, orderBy('createdAt', 'desc'));
         const snapshot = await getDocs(q);
         return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+    },
+
+    async ensureProfileForAuthUser(authUser: FirebaseAuthUser): Promise<void> {
+        const docRef = doc(db, 'users', authUser.uid);
+        const snapshot = await getDoc(docRef);
+        if (snapshot.exists()) return;
+
+        const now = new Date().toISOString();
+        await setDoc(docRef, {
+            email: authUser.email || '',
+            displayName: authUser.displayName || 'Administrador',
+            role: 'admin',
+            phone: '',
+            isActive: true,
+            createdAt: now,
+            updatedAt: now,
+        });
     },
 
     async getById(id: string): Promise<User | null> {
@@ -31,14 +79,18 @@ export const UsersService = {
         return { id: snapshot.id, ...snapshot.data() } as User;
     },
 
-    async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    async create(data: CreateUserInput): Promise<string> {
         const now = new Date().toISOString();
-        const docRef = await addDoc(usersCollection, {
-            ...data,
+        const { password, ...profileData } = data;
+        const uid = await createFirebaseAuthUser(profileData.email, password);
+
+        await setDoc(doc(db, 'users', uid), {
+            ...profileData,
             createdAt: now,
             updatedAt: now,
         });
-        return docRef.id;
+
+        return uid;
     },
 
     async update(id: string, data: Partial<User>): Promise<void> {

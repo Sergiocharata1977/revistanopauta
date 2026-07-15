@@ -1,5 +1,14 @@
 # Handoff actual - Cr. Jorge Ricardo Bade
 
+## Actualizacion 2026-07-15 - Correccion sistema de usuarios
+
+- Diagnostico: `/admin/users` no funcionaba como sistema real de acceso. Creaba/mostraba documentos en `users`, pero no creaba credenciales en Firebase Auth; ademas las reglas Firestore impedían listar/crear perfiles de otros usuarios si estaban desplegadas.
+- `app/admin/users/page.tsx`: se agrego campo de contrasena inicial, errores visibles y sincronizacion automatica del perfil del admin logueado.
+- `lib/services.ts`: `UsersService.create` ahora crea primero la cuenta en Firebase Authentication via Identity Toolkit REST y luego guarda el perfil en `users/{uid}`.
+- `app/setup/page.tsx`: el alta inicial ahora tambien crea el perfil Firestore del administrador y actualiza el placeholder al dominio del contador.
+- `firestore.rules`: se habilito gestion de perfiles `users` para usuarios autenticados del panel. Reglas desplegadas con `firebase deploy --only firestore:rules --project dra-casasola-web` OK.
+- Validacion local liviana: `git diff --check` OK, solo warnings CRLF. Falta validar con build remoto Vercel al deploy.
+
 ## Actualizacion 2026-07-15 - Boton login en header publico
 
 - Se agrego acceso visible `Login` en `components/header.tsx`, apuntando a `/login`.

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { signUp } from '@/lib/firebase/auth';
+import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function SetupPage() {
     const [email, setEmail] = useState('');
@@ -28,7 +30,18 @@ export default function SetupPage() {
 
             const result = await signUp(email, password);
 
-            if (result.success) {
+            if (result.success && result.user) {
+                const now = new Date().toISOString();
+                await setDoc(doc(db, 'users', result.user.uid), {
+                    email,
+                    displayName: 'Administrador',
+                    role: 'admin',
+                    phone: '',
+                    isActive: true,
+                    createdAt: now,
+                    updatedAt: now,
+                });
+
                 setStatus({
                     type: 'success',
                     message: `Usuario ${email} creado exitosamente. Ya puedes iniciar sesión.`
@@ -76,7 +89,7 @@ export default function SetupPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="admin@lla-sudoeste.com"
+                                placeholder="admin@jorgericardobade.com.ar"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
