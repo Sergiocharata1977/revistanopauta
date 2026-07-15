@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 
+import { BrandLogo } from '@/components/brand-logo'
+
 const links = [
   ['Inicio', '/#inicio'],
   ['Servicios', '/#servicios'],
@@ -19,9 +21,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-sm font-semibold tracking-tight text-slate-950 sm:text-base">
-          Cr. Jorge Ricardo Bade
-        </Link>
+        <BrandLogo compact className="max-w-[220px] sm:max-w-none" />
 
         <nav className="hidden items-center gap-7 md:flex">
           {links.map(([label, href]) => (

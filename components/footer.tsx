@@ -1,11 +1,13 @@
 import Link from 'next/link'
 
+import { BrandLogo } from '@/components/brand-logo'
+
 export function Footer() {
   return (
     <footer className="bg-[#242b2d] text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_0.7fr_0.7fr] lg:px-8">
         <div>
-          <h3 className="text-base font-semibold">Cr. Jorge Ricardo Bade</h3>
+          <BrandLogo inverse />
           <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
             Estudio contable orientado a empresas, comercios, emprendedores, profesionales y personas
             que necesitan informacion clara para cumplir y decidir mejor.

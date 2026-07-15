@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, AlertCircle, Calculator } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { BrandLogo } from '@/components/brand-logo';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -55,12 +56,10 @@ export default function LoginPage() {
             <Card className="w-full max-w-md border-0 shadow-2xl">
                 <CardHeader className="space-y-1 text-center pb-8 pt-8">
                     <div className="flex justify-center mb-6">
-                        <div className="bg-accent/20 p-4 rounded-full">
-                            <Calculator className="w-12 h-12 text-accent" />
-                        </div>
+                        <BrandLogo href={null} />
                     </div>
-                    <CardTitle className="text-3xl font-serif font-bold tracking-tight text-foreground">
-                        Cr. Jorge Ricardo Bade
+                    <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
+                        Acceso privado
                     </CardTitle>
                     <CardDescription className="text-muted-foreground text-lg">
                         Panel de Administración

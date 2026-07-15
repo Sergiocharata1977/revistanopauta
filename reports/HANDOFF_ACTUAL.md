@@ -1,5 +1,13 @@
 # Handoff actual - Cr. Jorge Ricardo Bade
 
+## Actualizacion 2026-07-15 - Sistema de logo recuperado
+
+- Se incorporo un componente reutilizable `components/brand-logo.tsx` para centralizar la marca del estudio.
+- El logo combina isotipo `JB`, nombre completo `Cr. Jorge Ricardo Bade` y descriptor `Estudio contable`, con variantes compacta e inversa.
+- Se reemplazaron textos/identidad suelta en `components/header.tsx`, `components/footer.tsx`, `app/login/page.tsx` y `app/admin/layout.tsx`.
+- Se actualizo `public/icon.svg` y la metadata de `app/layout.tsx` para que el favicon use la nueva marca SVG en lugar del icono generico previo.
+- Validacion liviana: `git diff --check` OK, solo warnings CRLF. No se corrio build/type-check porque el clon en D no tiene `node_modules` y el handoff indica no instalar dependencias ni correr Node pesado salvo pedido explicito.
+
 ## Actualizacion 2026-07-11 - Diseno Stitch aplicado
 
 - Se aplico el rediseño visual estilo Stitch indicado por el usuario sobre la home publica.

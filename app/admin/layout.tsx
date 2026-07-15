@@ -12,10 +12,10 @@ import {
     LogOut,
     Menu,
     KanbanSquare,
-    UserCog,
-    Calculator
+    UserCog
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BrandLogo } from '@/components/brand-logo';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, loading, signOut } = useAuth();
@@ -46,13 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar */}
             <aside className={`bg-primary text-primary-foreground w-64 fixed h-full transition-transform z-30 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
                 <div className="p-6 border-b border-primary-foreground/20 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Calculator className="h-8 w-8 text-accent" />
-                        <div>
-                            <h2 className="text-lg font-serif font-bold text-primary-foreground leading-tight">Cr. Jorge Bade</h2>
-                            <span className="text-xs text-accent">Panel Admin</span>
-                        </div>
-                    </div>
+                    <BrandLogo inverse compact className="max-w-[190px]" />
                     <button className="md:hidden text-primary-foreground/60" onClick={() => setSidebarOpen(false)}>
                         <Menu />
                     </button>
