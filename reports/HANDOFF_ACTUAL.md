@@ -1,4 +1,66 @@
-# Handoff actual - Cr. Jorge Ricardo Bade
+# Handoff actual - Revista No Pauta
+
+> El proyecto se llamaba `Cr. Jorge Ricardo Bade` y antes `dra.casasola`. Las
+> entradas anteriores a 2026-08-17 son de esas etapas y se conservan solo como
+> historia: no describen la revista.
+
+## Actualizacion 2026-08-17 - Firebase propio y arreglo de la conexion
+
+Estado: la revista quedo apuntando a su propio proyecto Firebase
+`revistanopauta`. Antes usaba `dra-casasola-web`, heredado.
+
+Que se encontro al controlar la migracion:
+
+- **La apiKey estaba mal transcrita.** Se habia copiado una `B` como `8`
+  (`...S7B8EJq...` en vez de `...S7BBEJq...`). Google respondia
+  `API_KEY_INVALID` a todo lo que pasa por el SDK cliente: login, alta de
+  usuarios y subida de fotos. Corregido en `lib/firebase-config.ts`, verificado
+  contra `firebase apps:sdkconfig WEB --project revistanopauta`.
+
+- **Habia dos configuraciones de Firebase conviviendo.** `lib/firebase-config.ts`
+  apuntaba a `revistanopauta` y `lib/firebase/config.ts` tenia otra copia
+  hardcodeada a `dra-casasola-web`, sin leer variables de entorno, por eso la
+  migracion no la alcanzo. Las dos llamaban a `initializeApp` protegido por
+  `getApps().length === 0`: ganaba la que cargara primero y la otra se colgaba
+  en silencio del proyecto ajeno. El resultado era que la portada leia las notas
+  de `revistanopauta` mientras login, `/setup` y `AuthContext` autenticaban
+  contra `dra-casasola-web`. Ahora `lib/firebase/config.ts` reexporta
+  `lib/firebase.ts`, que es la unica fuente de verdad.
+
+- **El proyecto de Vercel no estaba conectado al repo.** Todos los deploys
+  previos fueron manuales con la CLI; `commit + push` no disparaba nada. Se
+  conecto con `vercel git connect` a `Sergiocharata1977/revistanopauta`, asi que
+  ahora cada push a `main` deploya solo. Ojo: `Redeploy` en la UI reconstruye el
+  mismo commit, no trae los nuevos.
+
+Lo que quedo verificado funcionando:
+
+- Reglas de Firestore desplegadas: `news` lee publico (200), `users` y `tasks`
+  bloqueados (403).
+- Reglas de Storage desplegadas: `news/` accesible, resto cerrado.
+- App web registrada en Firebase con `appId`, `messagingSenderId`, bucket y
+  `authDomain` correctos.
+- Sitio en produccion HTTP 200, renderizando server-side.
+- El proyecto Vercel no tiene variables de entorno cargadas. Funciona con los
+  valores por defecto de `lib/firebase-config.ts`, que no son secretos.
+
+## Pendientes de esta etapa
+
+- **Crear el primer usuario en `/setup`.** No hay ninguno en Firebase Auth del
+  proyecto nuevo, por eso la coleccion `users` todavia no existe: Firestore no
+  guarda colecciones vacias, se crean con el primer documento. La coleccion se
+  llama `users` en ingles, no `usuarios`. Hacerlo recien despues del deploy con
+  los dos arreglos, o el usuario se da de alta en el proyecto equivocado.
+- **Cerrar `/setup`.** Esta abierto en produccion sin ninguna proteccion:
+  cualquiera que entre a esa URL se crea una cuenta con `role: admin` y puede
+  publicar en la revista. Bloquearlo apenas exista el usuario propio.
+- **Borrar `scripts/init-firebase.ts` y `scripts/create-auth-users.ts`.**
+  Apuntan a un tercer proyecto, `lla-landding`, con la key hardcodeada, y
+  siembran noticias politicas y usuarios con contrasenas en texto plano. Nada
+  los importa. Van junto con `Logos-lla/` y `milei-sudoeste-chaco.zip`, que
+  tambien sobran en la raiz.
+- Revisar la regla de `users` en `firestore.rules`: hoy cualquier usuario
+  autenticado puede leer y escribir el perfil de cualquier otro.
 
 ## Actualizacion 2026-07-15 - Correccion sistema de usuarios
 
