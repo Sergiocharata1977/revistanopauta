@@ -63,6 +63,20 @@ export function minutosDeLectura(nota: News): number {
     return Math.max(1, Math.round(palabras / 200));
 }
 
+/**
+ * Convierte un titulo en slug de URL.
+ * "La independencia periodistica" -> "la-independencia-periodistica"
+ */
+export function generarSlug(texto: string): string {
+    return texto
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '') // saca los acentos
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 70);
+}
+
 export function esColumnaDeOpinion(nota: News): boolean {
     return Boolean(nota.esOpinion) || nota.seccion === 'opinion';
 }

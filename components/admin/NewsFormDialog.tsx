@@ -17,6 +17,8 @@ import { Loader2 } from 'lucide-react';
 import { NewsService } from '@/lib/services';
 import type { News } from '@/lib/types';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { generarSlug } from '@/lib/portada';
+import { secciones } from '@/lib/site-config';
 
 interface NewsFormDialogProps {
     open: boolean;
@@ -25,167 +27,422 @@ interface NewsFormDialogProps {
     onSuccess?: () => void;
 }
 
+const VACIO = {
+    title: '',
+    volanta: '',
+    bajada: '',
+    slug: '',
+    content: '',
+    imageUrl: '',
+    epigrafe: '',
+    creditoFoto: '',
+    author: '',
+    autorCargo: '',
+    seccion: 'politica',
+    esOpinion: false,
+    jerarquia: 'normal',
+    ordenPortada: '',
+    tiempoLectura: '',
+    tags: '',
+    published: false,
+};
+
+/** Estilo compartido de los <select> nativos, para que peguen con los Input. */
+const CLASE_SELECT =
+    'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50';
+
+function Sub({ children }: { children: React.ReactNode }) {
+    return (
+        <h3 className="border-b pb-1 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            {children}
+        </h3>
+    );
+}
+
 export function NewsFormDialog({ open, onOpenChange, news, onSuccess }: NewsFormDialogProps) {
     const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        title: '',
-        summary: '',
-        content: '',
-        imageUrl: '',
-        author: '',
-        published: false,
-        tags: '',
-    });
+    const [slugTocado, setSlugTocado] = useState(false);
+    const [formData, setFormData] = useState(VACIO);
 
     useEffect(() => {
         if (news) {
             setFormData({
-                title: news.title,
-                summary: news.summary || '',
-                content: news.content,
+                title: news.title || '',
+                volanta: news.volanta || '',
+                bajada: news.bajada || news.summary || '',
+                slug: news.slug || '',
+                content: news.content || '',
                 imageUrl: news.imageUrl || '',
-                author: news.author,
-                published: news.published,
+                epigrafe: news.epigrafe || '',
+                creditoFoto: news.creditoFoto || '',
+                author: news.author || '',
+                autorCargo: news.autorCargo || '',
+                seccion: news.seccion || 'politica',
+                esOpinion: Boolean(news.esOpinion),
+                jerarquia: news.jerarquia || 'normal',
+                ordenPortada: news.ordenPortada != null ? String(news.ordenPortada) : '',
+                tiempoLectura: news.tiempoLectura != null ? String(news.tiempoLectura) : '',
                 tags: news.tags?.join(', ') || '',
+                published: Boolean(news.published),
             });
+            setSlugTocado(Boolean(news.slug));
         } else {
-            setFormData({
-                title: '',
-                summary: '',
-                content: '',
-                imageUrl: '',
-                author: '',
-                published: false,
-                tags: '',
-            });
+            setFormData(VACIO);
+            setSlugTocado(false);
         }
     }, [news, open]);
+
+    // Mientras nadie edite el slug a mano, se deriva del titulo.
+    const cambiarTitulo = (title: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            title,
+            slug: slugTocado ? prev.slug : generarSlug(title),
+        }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            // Build data object without undefined values (Firebase doesn't accept undefined)
-            const newsData: Record<string, unknown> = {
-                title: formData.title,
+            // Firestore rechaza `undefined`, asi que los opcionales se agregan
+            // solo cuando tienen valor.
+            const datos: Record<string, unknown> = {
+                title: formData.title.trim(),
                 content: formData.content,
-                author: formData.author,
+                author: formData.author.trim(),
+                seccion: formData.seccion,
+                jerarquia: formData.jerarquia,
+                esOpinion: formData.esOpinion,
                 published: formData.published,
-                publishedAt: formData.published ? new Date().toISOString() : null,
             };
 
-            // Only add optional fields if they have values
-            if (formData.summary) newsData.summary = formData.summary;
-            if (formData.imageUrl) newsData.imageUrl = formData.imageUrl;
-            if (formData.tags) {
-                const tagsArray = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
-                if (tagsArray.length > 0) newsData.tags = tagsArray;
+            const slug = (formData.slug || generarSlug(formData.title)).trim();
+            if (slug) datos.slug = slug;
+
+            const opcionales: Array<[string, string]> = [
+                ['volanta', formData.volanta],
+                ['bajada', formData.bajada],
+                ['epigrafe', formData.epigrafe],
+                ['creditoFoto', formData.creditoFoto],
+                ['autorCargo', formData.autorCargo],
+                ['imageUrl', formData.imageUrl],
+            ];
+            for (const [clave, valor] of opcionales) {
+                if (valor && valor.trim()) datos[clave] = valor.trim();
+            }
+
+            // `summary` se mantiene sincronizado con la bajada: lo siguen
+            // leyendo el listado y los metadatos de las notas viejas.
+            if (formData.bajada.trim()) datos.summary = formData.bajada.trim();
+
+            const orden = parseInt(formData.ordenPortada, 10);
+            if (!Number.isNaN(orden)) datos.ordenPortada = orden;
+
+            const minutos = parseInt(formData.tiempoLectura, 10);
+            if (!Number.isNaN(minutos)) datos.tiempoLectura = minutos;
+
+            const tags = formData.tags.split(',').map((t) => t.trim()).filter(Boolean);
+            if (tags.length > 0) datos.tags = tags;
+
+            // La fecha de publicacion se fija la primera vez que se publica y
+            // no se pisa en cada guardado posterior.
+            if (formData.published) {
+                datos.publishedAt = news?.publishedAt || new Date().toISOString();
+            } else {
+                datos.publishedAt = null;
             }
 
             if (news) {
-                await NewsService.update(news.id, newsData);
+                await NewsService.update(news.id, datos);
             } else {
-                await NewsService.create(newsData);
+                await NewsService.create(datos as never);
             }
 
             onOpenChange(false);
             onSuccess?.();
         } catch (error) {
-            console.error('Error saving news:', error);
-            alert('Error al guardar la noticia');
+            console.error('Error al guardar la nota:', error);
+            alert('No se pudo guardar la nota. Revisa la consola para el detalle.');
         } finally {
             setLoading(false);
         }
     };
 
+    const esOpinion = formData.esOpinion || formData.seccion === 'opinion';
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>{news ? 'Editar Noticia' : 'Nueva Noticia'}</DialogTitle>
+                    <DialogTitle>{news ? 'Editar nota' : 'Nueva nota'}</DialogTitle>
                     <DialogDescription>
-                        {news ? 'Modifica los datos de la noticia' : 'Completa los datos para crear una nueva noticia'}
+                        Los campos marcados con * son obligatorios. El resto define como se ve la
+                        nota en la portada y al compartirla.
                     </DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* ---------------- Titulacion ---------------- */}
+                    <Sub>Titulacion</Sub>
+
                     <div className="space-y-2">
-                        <Label htmlFor="title">Título *</Label>
+                        <Label htmlFor="volanta">Volanta</Label>
                         <Input
-                            id="title"
-                            value={formData.title}
-                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            required
-                            placeholder="Título de la noticia"
+                            id="volanta"
+                            value={formData.volanta}
+                            onChange={(e) => setFormData({ ...formData, volanta: e.target.value })}
+                            placeholder="Linea corta que va ARRIBA del titulo. Ej: Analisis / Medios"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="summary">Resumen</Label>
+                        <Label htmlFor="title">Titulo *</Label>
+                        <Input
+                            id="title"
+                            value={formData.title}
+                            onChange={(e) => cambiarTitulo(e.target.value)}
+                            required
+                            placeholder="Titulo de la nota"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="bajada">Bajada</Label>
                         <Textarea
-                            id="summary"
-                            value={formData.summary}
-                            onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                            placeholder="Breve resumen de la noticia"
+                            id="bajada"
+                            value={formData.bajada}
+                            onChange={(e) => setFormData({ ...formData, bajada: e.target.value })}
+                            placeholder="Parrafo de entrada, debajo del titulo. Es lo que se ve al compartir en WhatsApp."
                             rows={2}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="content">Contenido *</Label>
+                        <Label htmlFor="slug">Direccion web</Label>
+                        <Input
+                            id="slug"
+                            value={formData.slug}
+                            onChange={(e) => {
+                                setSlugTocado(true);
+                                setFormData({ ...formData, slug: generarSlug(e.target.value) });
+                            }}
+                            placeholder="se-genera-solo-desde-el-titulo"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            /noticias/{formData.slug || 'se-genera-solo'}
+                        </p>
+                    </div>
+
+                    {/* ---------------- Clasificacion ---------------- */}
+                    <Sub>Clasificacion</Sub>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="seccion">Seccion *</Label>
+                            <select
+                                id="seccion"
+                                className={CLASE_SELECT}
+                                value={formData.seccion}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, seccion: e.target.value })
+                                }
+                            >
+                                {secciones.map((s) => (
+                                    <option key={s.slug} value={s.slug}>
+                                        {s.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="tags">Etiquetas (separadas por comas)</Label>
+                            <Input
+                                id="tags"
+                                value={formData.tags}
+                                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                                placeholder="chaco, presupuesto, salud"
+                            />
+                        </div>
+                    </div>
+
+                    <label className="flex cursor-pointer items-center gap-2">
+                        <input
+                            type="checkbox"
+                            checked={formData.esOpinion}
+                            onChange={(e) =>
+                                setFormData({ ...formData, esOpinion: e.target.checked })
+                            }
+                            className="h-4 w-4 rounded border-gray-300"
+                        />
+                        <span className="text-sm">
+                            Es una columna de opinion firmada
+                            <span className="ml-1 text-muted-foreground">
+                                (va a Voz Libre y lleva el aviso de responsabilidad)
+                            </span>
+                        </span>
+                    </label>
+
+                    {/* ---------------- Portada ---------------- */}
+                    <Sub>Lugar en la portada</Sub>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="jerarquia">Jerarquia</Label>
+                            <select
+                                id="jerarquia"
+                                className={CLASE_SELECT}
+                                value={formData.jerarquia}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, jerarquia: e.target.value })
+                                }
+                                disabled={esOpinion}
+                            >
+                                <option value="normal">Sin lugar fijo</option>
+                                <option value="breve">Apuntes (columna izquierda)</option>
+                                <option value="destacada">Lecturas (con foto)</option>
+                                <option value="apertura">Apertura (nota principal)</option>
+                            </select>
+                            {esOpinion && (
+                                <p className="text-xs text-muted-foreground">
+                                    Las columnas de opinion van siempre a Voz Libre.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="ordenPortada">Orden dentro del bloque</Label>
+                            <Input
+                                id="ordenPortada"
+                                type="number"
+                                min={1}
+                                value={formData.ordenPortada}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, ordenPortada: e.target.value })
+                                }
+                                placeholder="1 = mas arriba"
+                            />
+                        </div>
+                    </div>
+
+                    {/* ---------------- Firma ---------------- */}
+                    <Sub>Firma</Sub>
+
+                    <div className="grid gap-4 sm:grid-cols-3">
+                        <div className="space-y-2 sm:col-span-1">
+                            <Label htmlFor="author">Autor *</Label>
+                            <Input
+                                id="author"
+                                value={formData.author}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, author: e.target.value })
+                                }
+                                required
+                                placeholder="Nombre de quien firma"
+                            />
+                        </div>
+
+                        <div className="space-y-2 sm:col-span-1">
+                            <Label htmlFor="autorCargo">Cargo o rol</Label>
+                            <Input
+                                id="autorCargo"
+                                value={formData.autorCargo}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, autorCargo: e.target.value })
+                                }
+                                placeholder="Ej: Mesa de edicion"
+                            />
+                        </div>
+
+                        <div className="space-y-2 sm:col-span-1">
+                            <Label htmlFor="tiempoLectura">Minutos de lectura</Label>
+                            <Input
+                                id="tiempoLectura"
+                                type="number"
+                                min={1}
+                                value={formData.tiempoLectura}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, tiempoLectura: e.target.value })
+                                }
+                                placeholder="se calcula solo"
+                            />
+                        </div>
+                    </div>
+
+                    {/* ---------------- Foto ---------------- */}
+                    <Sub>Foto</Sub>
+
+                    <ImageUpload
+                        currentUrl={formData.imageUrl}
+                        onImageUploaded={(url) => setFormData({ ...formData, imageUrl: url })}
+                        folder="news"
+                    />
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="epigrafe">Epigrafe</Label>
+                            <Input
+                                id="epigrafe"
+                                value={formData.epigrafe}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, epigrafe: e.target.value })
+                                }
+                                placeholder="Que se ve en la foto"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="creditoFoto">Credito</Label>
+                            <Input
+                                id="creditoFoto"
+                                value={formData.creditoFoto}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, creditoFoto: e.target.value })
+                                }
+                                placeholder="Quien saco la foto"
+                            />
+                        </div>
+                    </div>
+
+                    {/* ---------------- Cuerpo ---------------- */}
+                    <Sub>Cuerpo</Sub>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="content">Texto de la nota *</Label>
                         <Textarea
                             id="content"
                             value={formData.content}
                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                             required
-                            placeholder="Contenido completo de la noticia"
-                            rows={6}
+                            placeholder="Escribi la nota. Deja una linea en blanco entre parrafo y parrafo."
+                            rows={12}
                         />
+                        <p className="text-xs text-muted-foreground">
+                            Separa los parrafos con una linea en blanco.
+                        </p>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label>Imagen</Label>
-                        <ImageUpload
-                            currentUrl={formData.imageUrl}
-                            onImageUploaded={(url) => setFormData({ ...formData, imageUrl: url })}
-                            folder="news"
-                        />
-                    </div>
+                    {/* ---------------- Estado ---------------- */}
+                    <Sub>Estado</Sub>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="author">Autor *</Label>
-                        <Input
-                            id="author"
-                            value={formData.author}
-                            onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                            required
-                            placeholder="Nombre del autor"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="tags">Etiquetas (separadas por comas)</Label>
-                        <Input
-                            id="tags"
-                            value={formData.tags}
-                            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                            placeholder="política, economía, desarrollo"
-                        />
-                    </div>
-
-                    <div className="flex items-center space-x-2">
+                    <label className="flex cursor-pointer items-center gap-2">
                         <input
                             type="checkbox"
-                            id="published"
                             checked={formData.published}
-                            onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-                            className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                            onChange={(e) =>
+                                setFormData({ ...formData, published: e.target.checked })
+                            }
+                            className="h-4 w-4 rounded border-gray-300"
                         />
-                        <Label htmlFor="published" className="cursor-pointer">
-                            Publicar inmediatamente
-                        </Label>
-                    </div>
+                        <span className="text-sm">
+                            Publicada
+                            <span className="ml-1 text-muted-foreground">
+                                (si esta destildada queda como borrador, no se ve en la web)
+                            </span>
+                        </span>
+                    </label>
 
                     <DialogFooter>
                         <Button
@@ -196,9 +453,9 @@ export function NewsFormDialog({ open, onOpenChange, news, onSuccess }: NewsForm
                         >
                             Cancelar
                         </Button>
-                        <Button type="submit" disabled={loading} className="bg-violet-600 hover:bg-violet-700">
+                        <Button type="submit" disabled={loading}>
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            {news ? 'Guardar Cambios' : 'Crear Noticia'}
+                            {news ? 'Guardar cambios' : 'Crear nota'}
                         </Button>
                     </DialogFooter>
                 </form>

@@ -56,18 +56,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <Link href="/admin">
                         <div className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive('/admin') ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground'}`}>
                             <LayoutDashboard size={20} />
-                            Dashboard
+                            Panel
                         </div>
                     </Link>
 
                     <div className="pt-4 pb-2 px-4 text-xs font-bold text-primary-foreground/50 uppercase tracking-wider">
-                        Contenido
+                        Redaccion
                     </div>
 
                     <Link href="/admin/news">
                         <div className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive('/admin/news') ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground'}`}>
                             <Newspaper size={20} />
-                            Novedades
+                            Notas
                         </div>
                     </Link>
 
@@ -79,20 +79,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </Link>
 
                     <div className="pt-4 pb-2 px-4 text-xs font-bold text-primary-foreground/50 uppercase tracking-wider">
-                        Gestión
+                        Equipo
                     </div>
 
                     <Link href="/admin/tasks">
                         <div className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive('/admin/tasks') ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground'}`}>
                             <KanbanSquare size={20} />
-                            Tareas
+                            Planificacion
                         </div>
                     </Link>
 
                     <Link href="/admin/users">
                         <div className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive('/admin/users') ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground'}`}>
                             <UserCog size={20} />
-                            Usuarios
+                            Staff
                         </div>
                     </Link>
 
