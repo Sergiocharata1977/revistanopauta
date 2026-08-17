@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.descripcion,
   keywords:
-    'Diario Pauta, noticias Chaco, periodismo independiente, politica, economia, sociedad, judiciales, Charata, actualidad',
+    'Revista No Pauta, noticias Chaco, periodismo independiente, politica, economia, sociedad, judiciales, Charata, actualidad',
   openGraph: {
     title: `${siteConfig.nombreCompleto} - ${siteConfig.lema}`,
     description: siteConfig.descripcion,

@@ -1,6 +1,6 @@
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { NotaDetalle } from '@/components/diario/nota-detalle'
+import { NotaDetalle } from '@/components/revista/nota-detalle'
 
 type Props = { params: Promise<{ id: string }> }
 

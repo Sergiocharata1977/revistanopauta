@@ -8,7 +8,7 @@ import { NewsService } from '@/lib/services'
 import { notasParaListado } from '@/lib/portada'
 import { secciones } from '@/lib/site-config'
 import type { News } from '@/lib/types'
-import { NotaLista } from '@/components/diario/nota-card'
+import { NotaLista } from '@/components/revista/nota-card'
 
 type ListadoNotasProps = {
   /** Si se pasa, solo muestra notas de esa seccion. */

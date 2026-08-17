@@ -178,12 +178,12 @@
 
   /* ---- Titulares ---------------------------------------------------- */
 
-  /* Un titular de diario es apretado: interlineado corto, tracking negativo. */
+  /* El titular de revista respira mas que el de diario: menos apretado. */
   .titular {
     font-family: var(--font-display);
     font-weight: 700;
-    line-height: 1.02;
-    letter-spacing: -0.021em;
+    line-height: 1.08;
+    letter-spacing: -0.016em;
     text-wrap: balance;
   }
 
@@ -208,15 +208,16 @@
 
   /* ---- Cuerpo de nota ------------------------------------------------ */
 
+  /* Lectura larga: cuerpo mas grande y mas aire entre lineas que un diario. */
   .cuerpo-nota {
     font-family: var(--font-serif);
-    font-size: 1.0625rem;
-    line-height: 1.72;
+    font-size: 1.125rem;
+    line-height: 1.78;
     color: var(--pauta-tinta-2);
   }
 
   .cuerpo-nota p + p {
-    margin-top: 1.15em;
+    margin-top: 1.25em;
   }
 
   /* Capitular: la letra grande que abre la nota principal. */
@@ -282,30 +283,7 @@
   }
 }
 
-/* Marquesina de ultimo momento. */
-@keyframes pauta-marquesina {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.marquesina {
-  animation: pauta-marquesina 38s linear infinite;
-}
-
-.marquesina:hover {
-  animation-play-state: paused;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .marquesina {
-    animation: none;
-  }
-
   .foto-nota {
     transition: none;
   }

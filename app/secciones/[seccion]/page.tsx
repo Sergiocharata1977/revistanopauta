@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { ListadoNotas } from '@/components/diario/listado-notas'
+import { ListadoNotas } from '@/components/revista/listado-notas'
 import { getSeccion, secciones, siteConfig } from '@/lib/site-config'
 
 type Props = { params: Promise<{ seccion: string }> }

@@ -4,7 +4,7 @@ import type { News } from './types';
  * Contenido de muestra para la portada.
  *
  * Solo se usa cuando la coleccion `news` de Firestore no devuelve notas
- * publicadas, para que el diseno del diario sea visible desde el primer
+ * publicadas, para que el diseno de la revista sea visible desde el primer
  * arranque. En cuanto la redaccion publica su primera nota real, este
  * contenido deja de mostrarse automaticamente (ver lib/portada.ts).
  *
@@ -35,11 +35,11 @@ export const notasDemo: News[] = [
         seccion: 'politica',
         jerarquia: 'apertura',
         ordenPortada: 1,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         autorCargo: 'Mesa de edicion',
         tiempoLectura: 8,
         epigrafe: 'La sala de redaccion, el lugar donde todavia se decide que es noticia.',
-        creditoFoto: 'Archivo Pauta',
+        creditoFoto: 'Archivo No Pauta',
         bajada:
             'El ejercicio del periodismo enfrenta un escenario donde la velocidad de la informacion compite con la necesidad de verificarla. Que se pone en juego cuando el chequeo llega tarde.',
         summary:
@@ -61,7 +61,7 @@ export const notasDemo: News[] = [
         seccion: 'politica',
         jerarquia: 'breve',
         ordenPortada: 1,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         summary:
             'Un informe de auditoria abrio una discusion interna sobre criterios de asignacion presupuestaria.',
         content:
@@ -76,7 +76,7 @@ export const notasDemo: News[] = [
         seccion: 'politica',
         jerarquia: 'breve',
         ordenPortada: 2,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         summary:
             'El proyecto reune objeciones de bloques que rara vez coinciden, por motivos opuestos entre si.',
         content:
@@ -91,7 +91,7 @@ export const notasDemo: News[] = [
         seccion: 'economia',
         jerarquia: 'breve',
         ordenPortada: 3,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         summary:
             'La desaceleracion del indice general convive con aumentos sostenidos en la canasta basica.',
         content:
@@ -106,7 +106,7 @@ export const notasDemo: News[] = [
         seccion: 'economia',
         jerarquia: 'breve',
         ordenPortada: 4,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         summary: 'La decision busca sostener la demanda de instrumentos en moneda local.',
         content:
             'La decision busca sostener la demanda de instrumentos en moneda local en un contexto de expectativas todavia no ancladas. El costo es conocido: credito caro para las empresas que necesitan capital de trabajo.',
@@ -120,10 +120,10 @@ export const notasDemo: News[] = [
         seccion: 'judiciales',
         jerarquia: 'destacada',
         ordenPortada: 1,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         tiempoLectura: 5,
         epigrafe: 'La sede del maximo tribunal.',
-        creditoFoto: 'Archivo Pauta',
+        creditoFoto: 'Archivo No Pauta',
         summary:
             'El maximo tribunal fijo un estandar sobre el acceso estatal a comunicaciones privadas.',
         content:
@@ -138,10 +138,10 @@ export const notasDemo: News[] = [
         seccion: 'sociedad',
         jerarquia: 'destacada',
         ordenPortada: 2,
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         tiempoLectura: 6,
         epigrafe: 'Obras en el casco urbano.',
-        creditoFoto: 'Archivo Pauta',
+        creditoFoto: 'Archivo No Pauta',
         summary:
             'La recuperacion de barrios centricos mejora la infraestructura y expulsa a quienes vivian ahi.',
         content:
@@ -205,7 +205,7 @@ export const notasDemo: News[] = [
         volanta: 'Produccion',
         seccion: 'regionales',
         jerarquia: 'normal',
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         tiempoLectura: 5,
         summary:
             'El resultado de la campana define el nivel de actividad comercial de toda la region.',
@@ -220,18 +220,11 @@ export const notasDemo: News[] = [
         volanta: 'Letras',
         seccion: 'cultura',
         jerarquia: 'normal',
-        author: 'Redaccion Pauta',
+        author: 'Redaccion No Pauta',
         tiempoLectura: 6,
         summary:
             'Sellos independientes publican autores que el circuito comercial no llegaba a leer.',
         content:
             'Sellos independientes empezaron a publicar autores que el circuito comercial no llegaba a leer. El fenomeno es chico en volumen y significativo en efecto: cambia quien decide que se publica.',
     }),
-];
-
-/** Titulos que alimentan la marquesina roja de ultimo momento. */
-export const urgentesDemo: string[] = [
-    'Se conocio el informe de auditoria sobre el uso de partidas discrecionales',
-    'La Corte fijo un nuevo estandar sobre acceso a comunicaciones privadas',
-    'El Banco Central mantuvo la tasa de referencia por tercer mes',
 ];

@@ -3,6 +3,6 @@
   <rect x="18" y="18" width="144" height="144" fill="#FFFFFF"/>
   <rect x="32" y="32" width="116" height="5" fill="#12100E"/>
   <rect x="32" y="43" width="116" height="2" fill="#12100E"/>
-  <path d="M58 134V58h30c18 0 29 10 29 25s-11 26-29 26H75v25H58Zm17-40h12c8 0 12-4 12-11s-4-11-12-11H75v22Z" fill="#12100E"/>
+  <text x="90" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="62" font-weight="700" fill="#12100E" text-anchor="middle" letter-spacing="-2">NP</text>
   <rect x="32" y="143" width="116" height="5" fill="#C1272D"/>
 </svg>

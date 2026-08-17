@@ -1,7 +1,7 @@
 import { siteConfig } from './site-config';
 
 /**
- * Paginas institucionales del diario.
+ * Paginas institucionales de la revista.
  *
  * Son las que sostienen la credibilidad de un medio: quien lo hace, con
  * que criterio publica y como corrige. Los textos son un punto de partida
@@ -45,7 +45,7 @@ export const paginasInstitucionales: PaginaInstitucional[] = [
             '## Fuentes',
             'Preferimos las fuentes identificadas. Cuando usamos una fuente reservada, lo decimos de manera explicita y explicamos por que se reserva. Nunca inventamos una cita ni atribuimos declaraciones que no fueron dichas.',
             '## Separacion entre informacion y opinion',
-            'Las columnas de opinion se publican firmadas, con un aviso visible, y en una seccion propia. La opinion de un columnista no compromete la posicion del diario.',
+            'Las columnas de opinion se publican firmadas, con un aviso visible, y en una seccion propia. La opinion de un columnista no compromete la posicion de la revista.',
             '## Conflictos de interes',
             'Ningun integrante de la redaccion cubre temas en los que tenga interes economico, familiar o politico directo. Cuando existe un vinculo que el lector deberia conocer, se declara dentro de la nota.',
             '## Contenido patrocinado',

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { nombreSeccion } from '@/lib/site-config'
 import { fechaCorta, hrefNota, minutosDeLectura, resumenDe } from '@/lib/portada'
 import type { News } from '@/lib/types'
-import { FotoNota } from '@/components/diario/foto-nota'
+import { FotoNota } from '@/components/revista/foto-nota'
 
 /* ============================================================
    Encabezado de bloque: filete grueso + nombre del bloque.

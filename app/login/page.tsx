@@ -78,7 +78,7 @@ export default function LoginPage() {
                             <Input
                                 id="email"
                                 type="email"
-                            placeholder="redaccion@diariopauta.com.ar"
+                            placeholder="redaccion@revistanopauta.com.ar"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required

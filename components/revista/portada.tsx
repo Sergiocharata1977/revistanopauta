@@ -14,7 +14,7 @@ import {
   NotaOpinion,
   NotaTitular,
   TituloBloque,
-} from '@/components/diario/nota-card'
+} from '@/components/revista/nota-card'
 
 export function Portada() {
   const [portada, setPortada] = useState<PortadaData | null>(null)
@@ -44,14 +44,14 @@ export function Portada() {
   const { apertura, breves, opinion, destacadas, ultimas, esDemo } = portada
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-6">
       {esDemo && <AvisoDemo sinConexion={error} />}
 
       {/* ---- Cuerpo principal de la tapa: tres columnas ---- */}
-      <div className="grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)_260px] lg:gap-7">
+      <div className="grid gap-12 lg:grid-cols-[220px_minmax(0,1fr)_270px] lg:gap-10">
         {/* Columna izquierda: breves */}
         <aside className="order-2 lg:order-1">
-          <TituloBloque>Al minuto</TituloBloque>
+          <TituloBloque>Apuntes</TituloBloque>
           <div className="grid gap-4">
             {breves.map((nota) => (
               <NotaBreve key={nota.id} nota={nota} />
@@ -102,7 +102,7 @@ export function Portada() {
               El periodismo que no se puede comprar se sostiene entre todos
             </p>
             <p className="mt-2.5 font-serif text-[13px] leading-snug text-tinta-3">
-              Pauta no publica contenido pago sin identificar. Si te sirve lo que hacemos,
+              No Pauta no publica contenido pago sin identificar. Si te sirve lo que hacemos,
               acompanalo.
             </p>
             <Link
@@ -117,9 +117,9 @@ export function Portada() {
 
       {/* ---- Bloque de destacadas con foto ---- */}
       {destacadas.length > 0 && (
-        <section className="mt-14">
-          <TituloBloque href="/noticias">Tambien en esta edicion</TituloBloque>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
+        <section className="mt-20">
+          <TituloBloque href="/noticias">Lecturas</TituloBloque>
+          <div className="grid gap-12 sm:grid-cols-2">
             {destacadas.map((nota) => (
               <NotaDestacada key={nota.id} nota={nota} />
             ))}
@@ -129,8 +129,8 @@ export function Portada() {
 
       {/* ---- Cierre de tapa: titulares sueltos ---- */}
       {ultimas.length > 0 && (
-        <section className="mt-14">
-          <TituloBloque href="/noticias">Ultimas noticias</TituloBloque>
+        <section className="mt-20">
+          <TituloBloque href="/noticias">Lo ultimo</TituloBloque>
           <div className="grid gap-x-7 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
             {ultimas.map((nota) => (
               <NotaTitular key={nota.id} nota={nota} />
@@ -164,8 +164,8 @@ function AvisoDemo({ sinConexion }: { sinConexion: boolean }) {
 
 function PortadaCargando() {
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6" aria-busy="true">
-      <div className="grid animate-pulse gap-8 lg:grid-cols-[210px_minmax(0,1fr)_260px]">
+    <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-6" aria-busy="true">
+      <div className="grid animate-pulse gap-12 lg:grid-cols-[220px_minmax(0,1fr)_270px]">
         <div className="order-2 grid gap-4 lg:order-1">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="border-b border-filete pb-4">

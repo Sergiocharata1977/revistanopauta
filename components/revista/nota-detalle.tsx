@@ -14,8 +14,8 @@ import {
 } from '@/lib/portada'
 import { nombreSeccion, siteConfig } from '@/lib/site-config'
 import type { News } from '@/lib/types'
-import { FotoNota } from '@/components/diario/foto-nota'
-import { NotaDestacada, TituloBloque } from '@/components/diario/nota-card'
+import { FotoNota } from '@/components/revista/foto-nota'
+import { NotaDestacada, TituloBloque } from '@/components/revista/nota-card'
 
 type Estado =
   | { fase: 'cargando' }

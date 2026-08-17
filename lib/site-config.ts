@@ -1,21 +1,21 @@
 /**
  * Fuente unica de verdad de la identidad editorial.
  *
- * El mockup aprobado dice "DIARIO PAUTA". Si el medio se llama
- * "Revista Pauta", cambiar `tipo` y `nombreCompleto` aca alcanza:
- * masthead, header, footer, metadata y OpenGraph leen de este archivo.
+ * El nombre juega con la "pauta oficial": No Pauta es la revista que no la
+ * recibe, y por eso el lema la explica. Masthead, header, footer, metadata y
+ * OpenGraph leen de aca, asi que cambiar la marca es cambiar este objeto.
  */
 export const siteConfig = {
-    tipo: 'Diario',
-    marca: 'Pauta',
-    nombreCompleto: 'Diario Pauta',
+    tipo: 'Revista',
+    marca: 'No Pauta',
+    nombreCompleto: 'Revista No Pauta',
     lema: 'El periodismo que no se puede comprar',
     descripcion:
-        'Diario Pauta. Periodismo independiente del Chaco: politica, economia, sociedad, judiciales, cultura y opinion.',
-    url: 'https://cr-jorge-bade.vercel.app',
+        'Revista No Pauta. Periodismo independiente del Chaco: politica, economia, sociedad, judiciales, cultura y opinion.',
+    url: 'https://revistanopauta.vercel.app',
     locale: 'es_AR',
     ciudad: 'Charata, Chaco',
-    email: 'redaccion@diariopauta.com.ar',
+    email: 'redaccion@revistanopauta.com.ar',
     fundado: 2026,
 } as const;
 

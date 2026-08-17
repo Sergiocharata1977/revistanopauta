@@ -75,7 +75,7 @@ export function EventFormDialog({ open, onOpenChange, event, onSuccess }: EventF
                 startDate: new Date(formData.startDate).toISOString(),
                 location: formData.location,
                 isPublic: formData.isPublic,
-                organizer: formData.organizer || 'Diario Pauta',
+                organizer: formData.organizer || 'Revista No Pauta',
             };
 
             // Only add optional fields if they have values

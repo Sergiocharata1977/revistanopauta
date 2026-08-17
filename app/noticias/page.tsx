@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { ListadoNotas } from '@/components/diario/listado-notas'
+import { ListadoNotas } from '@/components/revista/listado-notas'
 import { siteConfig } from '@/lib/site-config'
 
 export const metadata: Metadata = {

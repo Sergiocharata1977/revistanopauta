@@ -7,8 +7,7 @@ import { Menu, Search, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { seccionesNav, siteConfig } from '@/lib/site-config'
-import { Masthead } from '@/components/diario/masthead'
-import { UltimoMomento } from '@/components/diario/ultimo-momento'
+import { Masthead } from '@/components/revista/masthead'
 
 type HeaderProps = {
   /** La portada usa el logotipo grande; el resto de las paginas, el chico. */
@@ -37,7 +36,6 @@ export function Header({ variante = 'interior' }: HeaderProps) {
 
   return (
     <header>
-      <UltimoMomento />
       <Masthead tamano={variante} />
 
       {/* Barra de secciones: se fija arriba al desplazarse. */}

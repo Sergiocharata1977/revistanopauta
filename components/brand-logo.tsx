@@ -15,7 +15,7 @@ type BrandLogoProps = {
 /**
  * Logotipo de Pauta en formato reducido.
  *
- * El masthead grande de la portada vive en components/diario/masthead.tsx.
+ * El masthead grande de la portada vive en components/revista/masthead.tsx.
  * Este componente es la version de servicio: header pegajoso, login y panel.
  */
 export function BrandLogo({
@@ -28,12 +28,12 @@ export function BrandLogo({
     <>
       <span
         className={cn(
-          'grid h-9 w-9 shrink-0 place-items-center font-display text-lg font-black leading-none',
+          'grid h-9 w-9 shrink-0 place-items-center font-display text-sm font-black leading-none tracking-tight',
           inverse ? 'bg-white text-tinta' : 'bg-tinta text-white'
         )}
         aria-hidden="true"
       >
-        P
+        NP
       </span>
       <span className="min-w-0 leading-none">
         <span

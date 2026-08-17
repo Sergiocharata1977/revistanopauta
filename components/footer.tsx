@@ -55,7 +55,7 @@ export function Footer() {
 
           <div>
             <h4 className="border-b border-white/15 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
-              El diario
+              La revista
             </h4>
             <div className="mt-4 grid gap-2.5">
               {institucional.map(([label, href]) => (

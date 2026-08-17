@@ -2,7 +2,7 @@
 
 // Linea de contacto con la redaccion: el lector manda datos, fotos o denuncias.
 const WHATSAPP_NUMBER = '543731532578'
-const WHATSAPP_MESSAGE = 'Hola Diario Pauta, quiero pasarles un dato para la redaccion.'
+const WHATSAPP_MESSAGE = 'Hola Revista No Pauta, quiero pasarles un dato para la redaccion.'
 
 export function WhatsAppButton() {
   const handleClick = () => {

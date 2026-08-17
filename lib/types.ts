@@ -34,7 +34,7 @@ export interface News {
     updatedAt: string;
     tags?: string[];
 
-    // ---- Campos editoriales (Diario Pauta) ----
+    // ---- Campos editoriales (Revista No Pauta) ----
     /** Slug de seccion definido en lib/site-config.ts */
     seccion?: string;
     /** URL amigable: /noticias/independencia-periodistica */
@@ -57,8 +57,6 @@ export interface News {
     esOpinion?: boolean;
     /** Minutos estimados de lectura. */
     tiempoLectura?: number;
-    /** Se muestra en la barra roja de ultimo momento. */
-    urgente?: boolean;
 }
 
 export interface Event {

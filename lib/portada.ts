@@ -1,5 +1,5 @@
 import type { News } from './types';
-import { notasDemo, urgentesDemo } from './demo-content';
+import { notasDemo } from './demo-content';
 
 /* ============================================================
    Helpers editoriales compartidos por portada, seccion y nota.
@@ -96,8 +96,6 @@ export type Portada = {
     destacadas: News[];
     /** Cierre de tapa: el resto, en orden cronologico. */
     ultimas: News[];
-    /** Titulares de la marquesina roja. */
-    urgentes: string[];
     /** true cuando la portada se armo con contenido de muestra. */
     esDemo: boolean;
 };
@@ -159,13 +157,7 @@ export function armarPortada(notas: News[]): Portada {
     // 5. El resto, para el cierre de tapa.
     const ultimas = ordenarPorFecha(fuente.filter((n) => !usadas.has(n.id))).slice(0, 6);
 
-    const urgentes = esDemo
-        ? urgentesDemo
-        : ordenarPorFecha(publicadas.filter((n) => n.urgente))
-              .slice(0, 5)
-              .map((n) => n.title);
-
-    return { apertura, breves, opinion, destacadas, ultimas, urgentes, esDemo };
+    return { apertura, breves, opinion, destacadas, ultimas, esDemo };
 }
 
 /**
