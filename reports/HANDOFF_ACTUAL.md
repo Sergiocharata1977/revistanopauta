@@ -44,16 +44,27 @@ Lo que quedo verificado funcionando:
 - El proyecto Vercel no tiene variables de entorno cargadas. Funciona con los
   valores por defecto de `lib/firebase-config.ts`, que no son secretos.
 
+Cerrado en la misma sesion:
+
+- **Primeros administradores creados.** Se dieron de alta dos usuarios desde
+  `/setup`, ya con los arreglos en produccion, asi que quedaron en el proyecto
+  correcto. Con eso nacio la coleccion `users`. Nota para el futuro: se llama
+  `users` en ingles, no `usuarios`, y Firestore no guarda colecciones vacias, se
+  crean solas con el primer documento. Lo mismo va a pasar con `news` al
+  publicar la primera nota.
+
+- **`/setup` cerrado.** Creaba una cuenta con `role: admin` sin pedir ninguna
+  credencial previa, y estaba publicada en internet: cualquiera que adivinara la
+  URL se hacia administrador de la revista. Ahora responde 404 salvo que
+  `SETUP_HABILITADO` valga `1` en las variables de entorno de Vercel. Se cerro en
+  vez de borrarse porque al estrenar un proyecto Firebase no hay otra forma de
+  crear el primer usuario; la secuencia sana es habilitar, crear y volver a
+  deshabilitar. La variable no lleva prefijo `NEXT_PUBLIC` a proposito, asi vive
+  solo en el servidor. Las altas siguientes van por `/admin/users`, que exige
+  sesion.
+
 ## Pendientes de esta etapa
 
-- **Crear el primer usuario en `/setup`.** No hay ninguno en Firebase Auth del
-  proyecto nuevo, por eso la coleccion `users` todavia no existe: Firestore no
-  guarda colecciones vacias, se crean con el primer documento. La coleccion se
-  llama `users` en ingles, no `usuarios`. Hacerlo recien despues del deploy con
-  los dos arreglos, o el usuario se da de alta en el proyecto equivocado.
-- **Cerrar `/setup`.** Esta abierto en produccion sin ninguna proteccion:
-  cualquiera que entre a esa URL se crea una cuenta con `role: admin` y puede
-  publicar en la revista. Bloquearlo apenas exista el usuario propio.
 - **Borrar `scripts/init-firebase.ts` y `scripts/create-auth-users.ts`.**
   Apuntan a un tercer proyecto, `lla-landding`, con la key hardcodeada, y
   siembran noticias politicas y usuarios con contrasenas en texto plano. Nada
