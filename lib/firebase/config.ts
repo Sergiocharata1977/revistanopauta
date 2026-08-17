@@ -1,39 +1,15 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp, getApps } from 'firebase/app';
-import { getAnalytics, isSupported } from 'firebase/analytics';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-
-// Firebase config for Dra. Lidia Casasola project
-export const firebaseConfig = {
-    apiKey: "AIzaSyArvoaEjaJpGNwkUbg3I5Cd68WovHOQGgo",
-    authDomain: "dra-casasola-web.firebaseapp.com",
-    projectId: "dra-casasola-web",
-    storageBucket: "dra-casasola-web.firebasestorage.app",
-    messagingSenderId: "787477542103",
-    appId: "1:787477542103:web:a69baa95716a38227dac92"
-};
-
-// Verificar que la configuración sea válida
-if (
-    !firebaseConfig.apiKey ||
-    !firebaseConfig.authDomain ||
-    !firebaseConfig.projectId
-) {
-    throw new Error('Firebase configuration is missing required fields');
-}
-
-// Initialize Firebase (singleton pattern)
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-
-// Initialize Firebase services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-
-// Analytics solo en el cliente
-export const analytics =
-    typeof window !== 'undefined' ? isSupported().then(yes => yes ? getAnalytics(app) : null) : null;
-
-export default app;
+/**
+ * Reexport del Firebase unico de la revista.
+ *
+ * Este archivo tenia su propia copia de la configuracion, hardcodeada al
+ * proyecto heredado dra-casasola-web. Como lib/firebase.ts ya inicializaba
+ * revistanopauta, el bundle terminaba con dos initializeApp compitiendo por
+ * el mismo app default: el que cargaba primero ganaba y el otro se colgaba
+ * en silencio del proyecto ajeno. Por eso el panel autenticaba contra
+ * dra-casasola-web mientras la portada leia las notas de revistanopauta.
+ *
+ * Ahora hay una sola fuente de verdad. Se conserva el archivo, y no se
+ * borra, porque lib/firebase/auth.ts importa de aca; asi el arreglo no
+ * arrastra un renombre de imports por todo el panel.
+ */
+export { app as default, app, auth, db, storage, analytics, firebaseConfig } from '../firebase';
