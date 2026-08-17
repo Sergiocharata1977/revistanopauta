@@ -1,34 +1,75 @@
 rules_version = '2';
 
+// Reglas de Firestore de Revista No Pauta.
+//
+// Criterio general: las notas se leen sin sesion, porque son publicas y las
+// tienen que poder indexar Google y previsualizar WhatsApp. Todo lo que sea
+// del panel de redaccion exige sesion.
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // News - anyone can read published, authenticated can write
+
+    function logueado() {
+      return request.auth != null;
+    }
+
+    function propio(userId) {
+      return logueado() && request.auth.uid == userId;
+    }
+
+    // Lee el perfil del que hace el pedido para saber si es admin. Cuesta una
+    // lectura por evaluacion, y es el precio de no repetir el rol en cada doc.
+    function admin() {
+      return logueado()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function conservaRol() {
+      return request.resource.data.role == resource.data.role;
+    }
+
+    // Notas. Lectura publica, escritura solo con sesion.
     match /news/{newsId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if logueado();
     }
-    
-    // Events - anyone can read public events, authenticated can write
+
     match /events/{eventId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if logueado();
     }
-    
-    // Users - authenticated admin panel can manage user profiles.
-    // Firebase Authentication remains the source of truth for login credentials.
+
+    // Perfiles del panel.
+    //
+    // Antes cualquier usuario autenticado podia leer y escribir el perfil de
+    // cualquier otro, incluido cambiarse el propio rol a admin. Ahora:
+    //
+    // - get: cada uno ve su perfil; el admin ve el de todos.
+    // - list: solo el admin, que es quien usa la pantalla /admin/users. Se
+    //   separa de get a proposito, porque Firestore no puede verificar una
+    //   condicion por documento sobre una consulta de coleccion y rechazaria
+    //   el listado entero.
+    // - update: uno puede editar sus propios datos pero no ascenderse; el rol
+    //   lo cambia unicamente un admin.
+    //
+    // Ojo, esto no reemplaza cerrar el alta publica en Authentication: quien
+    // logre crearse una cuenta puede crear su propio perfil. La puerta de
+    // entrada se cierra en Firebase, no aca.
     match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow get: if admin() || propio(userId);
+      allow list: if admin();
+      allow create: if admin() || propio(userId);
+      allow update: if admin() || (propio(userId) && conservaRol());
+      allow delete: if admin();
     }
-    
-    // Tasks - only authenticated users
+
     match /tasks/{taskId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if logueado();
     }
-    
-    // Collaborators - only authenticated users
+
     match /collaborators/{collaboratorId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if logueado();
     }
   }
 }
