@@ -12,7 +12,7 @@
  * proyecto. Lo que protege los datos son las reglas de firestore.rules.
  */
 export const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyAenIIfZXK8CYbrYS7B8EJqL3_kMhKkOmw',
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyAenIIfZXK8CYbrYS7BBEJqL3_kMhKkOmw',
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'revistanopauta.firebaseapp.com',
     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'revistanopauta',
     storageBucket:
