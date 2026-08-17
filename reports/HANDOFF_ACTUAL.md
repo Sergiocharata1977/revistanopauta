@@ -63,15 +63,49 @@ Cerrado en la misma sesion:
   solo en el servidor. Las altas siguientes van por `/admin/users`, que exige
   sesion.
 
+- **Material partidario eliminado.** El repo arrastraba la identidad de un
+  sitio de La Libertad Avanza anterior. Lo mas grave: `public/Logos-lla/` se
+  estaba sirviendo, los logos de campana respondian 200 en el dominio de la
+  revista, y el repositorio es publico en GitHub. Para un medio que va a
+  investigar la pauta oficial, eso era un pasivo de credibilidad. Se borraron
+  las dos copias de `Logos-lla/`, `milei-sudoeste-chaco.zip`, los componentes
+  huerfanos `join.tsx`, `contact.tsx` y `news.tsx`, la imagen
+  `jovenes-reunion-politica-argentina.jpg` y los dos scripts que apuntaban al
+  proyecto `lla-landding`. Verificado en produccion: todas esas rutas dan 404 y
+  portada, `/noticias`, `/login` y `/admin` siguen en 200.
+
+- **`firestore.rules` endurecido.** Cualquier usuario autenticado podia leer y
+  escribir el perfil de cualquier otro, incluido cambiarse el rol a admin.
+  Ahora cada uno ve y edita el suyo, el rol lo toca solo un admin, y el listado
+  de la coleccion queda reservado al admin. `get` y `list` estan separados a
+  proposito: Firestore no puede verificar una condicion por documento sobre una
+  consulta de coleccion y rechazaria el listado entero. Reglas desplegadas y
+  verificadas: `news` y `events` publicas en 200, `users` en 403 sin sesion.
+
 ## Pendientes de esta etapa
 
-- **Borrar `scripts/init-firebase.ts` y `scripts/create-auth-users.ts`.**
-  Apuntan a un tercer proyecto, `lla-landding`, con la key hardcodeada, y
-  siembran noticias politicas y usuarios con contrasenas en texto plano. Nada
-  los importa. Van junto con `Logos-lla/` y `milei-sudoeste-chaco.zip`, que
-  tambien sobran en la raiz.
-- Revisar la regla de `users` en `firestore.rules`: hoy cualquier usuario
-  autenticado puede leer y escribir el perfil de cualquier otro.
+- **Cerrar el alta publica en Firebase Authentication.** Es el pendiente de
+  seguridad que queda abierto. La `apiKey` es publica por diseno, asi que
+  cerrar `/setup` no alcanza: todavia se puede crear una cuenta llamando
+  directamente a la API REST de Identity Toolkit, y con una cuenta se puede
+  crear el propio perfil. Se cierra en Firebase Console, en Authentication >
+  Settings > User actions, deshabilitando la creacion de cuentas. Ojo con el
+  orden: con el alta deshabilitada, `/setup` deja de funcionar aunque se ponga
+  `SETUP_HABILITADO=1`, asi que para bootstrapear hay que reabrir las dos cosas.
+
+- **Componentes huerfanos de etapas anteriores.** Quedan sin importar:
+  `about`, `agenda`, `call-to-action`, `commitment`, `contacto-form`,
+  `eventos-resumen`, `hero`, `noticias-resumen`, `servicios`, `sobre-mi`,
+  `three-columns` y `theme-provider`. Con ellos quedan imagenes sueltas en
+  `public/`, entre otras `dra-casasola-profile.png`, que es la foto de una
+  persona real de un proyecto ajeno. No se borraron en el mismo commit porque
+  este clon no tiene `node_modules` y no se puede type-checkear antes de tocar
+  doce archivos. Conviene hacerlo aparte y mirando el build de Vercel.
+
+- **Plan de Vercel.** La cuenta es Hobby y arrastra un aviso de direccion de
+  facturacion incompleta. Hobby es para uso no comercial y limita la frecuencia
+  de cron, asi que conviene resolverlo antes de montar la automatizacion de
+  recoleccion diaria.
 
 ## Actualizacion 2026-07-15 - Correccion sistema de usuarios
 
