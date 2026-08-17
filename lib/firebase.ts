@@ -4,15 +4,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
-// Firebase config for Dra. Lidia Casasola project
-export const firebaseConfig = {
-    apiKey: "AIzaSyArvoaEjaJpGNwkUbg3I5Cd68WovHOQGgo",
-    authDomain: "dra-casasola-web.firebaseapp.com",
-    projectId: "dra-casasola-web",
-    storageBucket: "dra-casasola-web.firebasestorage.app",
-    messagingSenderId: "787477542103",
-    appId: "1:787477542103:web:a69baa95716a38227dac92"
-};
+// La configuracion vive en lib/firebase-config.ts para poder usarla tambien
+// desde el servidor sin arrastrar el SDK del navegador. Se reexporta para no
+// romper los imports existentes.
+import { firebaseConfig } from './firebase-config';
+
+export { firebaseConfig };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);

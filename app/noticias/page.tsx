@@ -3,14 +3,20 @@ import type { Metadata } from 'next'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { ListadoNotas } from '@/components/revista/listado-notas'
+import { getNotasPublicadas } from '@/lib/server/notas'
+import { notasParaListado } from '@/lib/portada'
 import { siteConfig } from '@/lib/site-config'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Archivo',
   description: `Todas las notas publicadas por ${siteConfig.nombreCompleto}, con buscador y filtro por seccion.`,
 }
 
-export default function ArchivoPage() {
+export default async function ArchivoPage() {
+  const { items, esDemo } = notasParaListado(await getNotasPublicadas())
+
   return (
     <div className="min-h-screen bg-papel">
       <Header />
@@ -27,7 +33,7 @@ export default function ArchivoPage() {
         </header>
 
         <div className="mt-8">
-          <ListadoNotas conBuscador conFiltros />
+          <ListadoNotas notas={items} esDemo={esDemo} conBuscador conFiltros />
         </div>
       </div>
 

@@ -1,111 +1,25 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
 
-import { NewsService } from '@/lib/services'
-import { notasDemo } from '@/lib/demo-content'
-import {
-  esColumnaDeOpinion,
-  fechaLarga,
-  minutosDeLectura,
-  ordenarPorFecha,
-} from '@/lib/portada'
+import { esColumnaDeOpinion, fechaLarga, minutosDeLectura } from '@/lib/portada'
 import { nombreSeccion, siteConfig } from '@/lib/site-config'
 import type { News } from '@/lib/types'
 import { FotoNota } from '@/components/revista/foto-nota'
 import { NotaDestacada, TituloBloque } from '@/components/revista/nota-card'
 
-type Estado =
-  | { fase: 'cargando' }
-  | { fase: 'no-encontrada' }
-  | { fase: 'lista'; nota: News; relacionadas: News[] }
-
 /**
  * Pagina de nota.
  *
- * Resuelve la nota tanto por slug editorial como por id de Firestore, para
- * que los enlaces viejos (que usaban el id) sigan funcionando.
+ * Componente de servidor: recibe la nota ya resuelta, asi que el titulo, la
+ * bajada y el cuerpo viajan dentro del HTML. Es la diferencia entre que Google
+ * y WhatsApp vean la nota o vean una pagina en blanco.
  */
-export function NotaDetalle({ identificador }: { identificador: string }) {
-  const [estado, setEstado] = useState<Estado>({ fase: 'cargando' })
-
-  useEffect(() => {
-    let vigente = true
-
-    const coincide = (n: News) => n.slug === identificador || n.id === identificador
-
-    const resolver = async () => {
-      let publicadas: News[] = []
-      try {
-        publicadas = (await NewsService.getPublished()).filter((n) => n.published !== false)
-      } catch {
-        publicadas = []
-      }
-
-      const fuente = publicadas.length > 0 ? publicadas : notasDemo
-      const nota = fuente.find(coincide)
-
-      if (!vigente) return
-
-      if (!nota) {
-        setEstado({ fase: 'no-encontrada' })
-        return
-      }
-
-      // Relacionadas: misma seccion primero; si no alcanza, lo mas reciente.
-      const resto = ordenarPorFecha(fuente.filter((n) => n.id !== nota.id))
-      const mismaSeccion = resto.filter((n) => n.seccion === nota.seccion)
-      const relacionadas = [...mismaSeccion, ...resto.filter((n) => n.seccion !== nota.seccion)]
-        .slice(0, 2)
-
-      setEstado({ fase: 'lista', nota, relacionadas })
-    }
-
-    void resolver()
-    return () => {
-      vigente = false
-    }
-  }, [identificador])
-
-  if (estado.fase === 'cargando') {
-    return (
-      <div className="mx-auto max-w-[720px] animate-pulse px-4 py-12 sm:px-6" aria-busy="true">
-        <div className="h-2.5 w-24 bg-papel-3" />
-        <div className="mt-4 h-10 w-full bg-papel-3" />
-        <div className="mt-2 h-10 w-4/5 bg-papel-3" />
-        <div className="mt-8 aspect-[16/9] w-full bg-papel-3" />
-        <div className="mt-8 grid gap-2.5">
-          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-3.5 w-full bg-papel-3" />
-          ))}
-        </div>
-        <span className="sr-only">Cargando la nota</span>
-      </div>
-    )
-  }
-
-  if (estado.fase === 'no-encontrada') {
-    return (
-      <div className="mx-auto max-w-[720px] px-4 py-24 text-center sm:px-6">
-        <p className="volanta">Error 404</p>
-        <h1 className="titular mt-3 text-4xl">Esta nota no existe o fue despublicada</h1>
-        <p className="mt-4 font-serif text-tinta-3">
-          Puede que el enlace este mal escrito o que la nota haya salido de circulacion.
-        </p>
-        <Link
-          href="/noticias"
-          className="mt-8 inline-flex items-center gap-2 border border-tinta px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.16em] text-tinta transition-colors hover:bg-tinta hover:text-white"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Ir al archivo
-        </Link>
-      </div>
-    )
-  }
-
-  const { nota, relacionadas } = estado
+export function NotaDetalle({
+  nota,
+  relacionadas,
+}: {
+  nota: News
+  relacionadas: News[]
+}) {
   const parrafos = (nota.content || '')
     .split(/\n{2,}/)
     .map((p) => p.trim())

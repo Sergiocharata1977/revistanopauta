@@ -1,12 +1,7 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
-import { NewsService } from '@/lib/services'
-import { armarPortada, type Portada as PortadaData } from '@/lib/portada'
+import { type Portada as PortadaData } from '@/lib/portada'
 import { secciones } from '@/lib/site-config'
-import type { News } from '@/lib/types'
 import {
   NotaApertura,
   NotaBreve,
@@ -16,36 +11,19 @@ import {
   TituloBloque,
 } from '@/components/revista/nota-card'
 
-export function Portada() {
-  const [portada, setPortada] = useState<PortadaData | null>(null)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    let vigente = true
-
-    NewsService.getPublished()
-      .then((notas: News[]) => {
-        if (vigente) setPortada(armarPortada(notas))
-      })
-      .catch(() => {
-        if (!vigente) return
-        // Sin Firestore igual se arma la tapa, con contenido de muestra.
-        setError(true)
-        setPortada(armarPortada([]))
-      })
-
-    return () => {
-      vigente = false
-    }
-  }, [])
-
-  if (!portada) return <PortadaCargando />
-
+/**
+ * Tapa de la revista.
+ *
+ * Es un componente de servidor puro: recibe la portada ya armada y solo la
+ * dibuja. Al no pedir datos desde el navegador, el HTML sale completo y las
+ * notas quedan visibles para buscadores y redes sociales.
+ */
+export function Portada({ portada }: { portada: PortadaData }) {
   const { apertura, breves, opinion, destacadas, ultimas, esDemo } = portada
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-6">
-      {esDemo && <AvisoDemo sinConexion={error} />}
+      {esDemo && <AvisoDemo />}
 
       {/* ---- Cuerpo principal de la tapa: tres columnas ---- */}
       <div className="grid gap-12 lg:grid-cols-[220px_minmax(0,1fr)_270px] lg:gap-10">
@@ -144,58 +122,18 @@ export function Portada() {
 
 /* ------------------------------------------------------------------ */
 
-function AvisoDemo({ sinConexion }: { sinConexion: boolean }) {
+function AvisoDemo() {
   return (
     <div className="mb-8 border-l-2 border-rojo bg-papel-2 px-4 py-3">
       <p className="volanta">Portada de demostracion</p>
       <p className="mt-1 font-serif text-sm text-tinta-2">
-        {sinConexion
-          ? 'No se pudo leer Firestore, asi que se muestra contenido de muestra. '
-          : 'Todavia no hay notas publicadas, asi que se muestra contenido de muestra. '}
-        Publica la primera nota desde{' '}
+        Todavia no hay notas publicadas, asi que se muestra contenido de muestra. Publica la
+        primera nota desde{' '}
         <Link href="/admin/news" className="border-b border-rojo text-rojo">
           el panel de redaccion
         </Link>{' '}
         y esta tapa se arma sola.
       </p>
-    </div>
-  )
-}
-
-function PortadaCargando() {
-  return (
-    <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-6" aria-busy="true">
-      <div className="grid animate-pulse gap-12 lg:grid-cols-[220px_minmax(0,1fr)_270px]">
-        <div className="order-2 grid gap-4 lg:order-1">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="border-b border-filete pb-4">
-              <div className="h-2 w-16 bg-papel-3" />
-              <div className="mt-2 h-3.5 w-full bg-papel-3" />
-              <div className="mt-1.5 h-3.5 w-4/5 bg-papel-3" />
-            </div>
-          ))}
-        </div>
-        <div className="order-1 lg:order-2 lg:border-l lg:border-filete lg:px-7">
-          <div className="h-2.5 w-24 bg-papel-3" />
-          <div className="mt-3 h-9 w-full bg-papel-3" />
-          <div className="mt-2 h-9 w-11/12 bg-papel-3" />
-          <div className="mt-5 aspect-[21/9] w-full bg-papel-3" />
-          <div className="mt-5 grid gap-2">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-3 w-full bg-papel-3" />
-            ))}
-          </div>
-        </div>
-        <div className="order-3 grid gap-4 lg:border-l lg:border-filete lg:pl-7">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="border-b border-filete pb-4">
-              <div className="h-10 w-10 bg-papel-3" />
-              <div className="mt-2 h-3.5 w-full bg-papel-3" />
-            </div>
-          ))}
-        </div>
-      </div>
-      <span className="sr-only">Cargando la portada</span>
     </div>
   )
 }

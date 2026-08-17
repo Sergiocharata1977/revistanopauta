@@ -4,9 +4,13 @@ import { notFound } from 'next/navigation'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { ListadoNotas } from '@/components/revista/listado-notas'
+import { getNotasPublicadas } from '@/lib/server/notas'
+import { notasParaListado } from '@/lib/portada'
 import { getSeccion, secciones, siteConfig } from '@/lib/site-config'
 
 type Props = { params: Promise<{ seccion: string }> }
+
+export const revalidate = 60
 
 export function generateStaticParams() {
   return secciones.map((s) => ({ seccion: s.slug }))
@@ -20,9 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: info.nombre,
     description: info.descripcion,
+    alternates: { canonical: `${siteConfig.url}/secciones/${info.slug}` },
     openGraph: {
       title: `${info.nombre} | ${siteConfig.nombreCompleto}`,
       description: info.descripcion,
+      url: `${siteConfig.url}/secciones/${info.slug}`,
       type: 'website',
     },
   }
@@ -32,6 +38,8 @@ export default async function SeccionPage({ params }: Props) {
   const { seccion } = await params
   const info = getSeccion(seccion)
   if (!info) notFound()
+
+  const { items, esDemo } = notasParaListado(await getNotasPublicadas())
 
   return (
     <div className="min-h-screen bg-papel">
@@ -48,7 +56,7 @@ export default async function SeccionPage({ params }: Props) {
         </header>
 
         <div className="mt-8">
-          <ListadoNotas seccion={info.slug} conFiltros />
+          <ListadoNotas notas={items} esDemo={esDemo} seccion={info.slug} conFiltros />
         </div>
       </div>
 

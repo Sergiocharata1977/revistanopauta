@@ -4,13 +4,15 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Search } from 'lucide-react'
 
-import { NewsService } from '@/lib/services'
-import { notasParaListado } from '@/lib/portada'
 import { secciones } from '@/lib/site-config'
 import type { News } from '@/lib/types'
 import { NotaLista } from '@/components/revista/nota-card'
 
 type ListadoNotasProps = {
+  /** Notas ya resueltas en el servidor. Llegan renderizadas en el HTML. */
+  notas: News[]
+  /** true cuando lo que se muestra es contenido de muestra. */
+  esDemo?: boolean
   /** Si se pasa, solo muestra notas de esa seccion. */
   seccion?: string
   /** Muestra el buscador de texto sobre el listado. */
@@ -21,38 +23,22 @@ type ListadoNotasProps = {
 
 const POR_PAGINA = 10
 
+/**
+ * Listado de notas.
+ *
+ * Sigue siendo un componente cliente porque el buscador y el boton de
+ * "cargar mas" necesitan estado, pero ya no pide datos: los recibe del
+ * servidor. Por eso la primera tanda de notas viaja dentro del HTML.
+ */
 export function ListadoNotas({
+  notas,
+  esDemo = false,
   seccion,
   conBuscador = false,
   conFiltros = false,
 }: ListadoNotasProps) {
-  const [todas, setTodas] = useState<News[] | null>(null)
-  const [esDemo, setEsDemo] = useState(false)
   const [busqueda, setBusqueda] = useState('')
   const [visibles, setVisibles] = useState(POR_PAGINA)
-
-  useEffect(() => {
-    let vigente = true
-
-    NewsService.getPublished()
-      .then((notas) => {
-        if (!vigente) return
-        const resultado = notasParaListado(notas)
-        setTodas(resultado.items)
-        setEsDemo(resultado.esDemo)
-      })
-      .catch(() => {
-        if (!vigente) return
-        // Sin Firestore, el listado cae al contenido de muestra.
-        const resultado = notasParaListado([])
-        setTodas(resultado.items)
-        setEsDemo(resultado.esDemo)
-      })
-
-    return () => {
-      vigente = false
-    }
-  }, [])
 
   // Al cambiar el filtro, volver a la primera tanda.
   useEffect(() => {
@@ -60,8 +46,7 @@ export function ListadoNotas({
   }, [busqueda, seccion])
 
   const filtradas = useMemo(() => {
-    if (!todas) return []
-    let lista = seccion ? todas.filter((n) => n.seccion === seccion) : todas
+    let lista = seccion ? notas.filter((n) => n.seccion === seccion) : notas
 
     const q = busqueda.trim().toLowerCase()
     if (q) {
@@ -74,26 +59,7 @@ export function ListadoNotas({
       )
     }
     return lista
-  }, [todas, seccion, busqueda])
-
-  if (!todas) {
-    return (
-      <div className="grid animate-pulse gap-6" aria-busy="true">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="grid gap-4 border-b border-filete py-6 sm:grid-cols-[200px_1fr]">
-            <div className="aspect-[4/3] bg-papel-3" />
-            <div>
-              <div className="h-2 w-20 bg-papel-3" />
-              <div className="mt-2.5 h-5 w-full bg-papel-3" />
-              <div className="mt-1.5 h-5 w-3/4 bg-papel-3" />
-              <div className="mt-3 h-3 w-full bg-papel-3" />
-            </div>
-          </div>
-        ))}
-        <span className="sr-only">Cargando notas</span>
-      </div>
-    )
-  }
+  }, [notas, seccion, busqueda])
 
   return (
     <div>
