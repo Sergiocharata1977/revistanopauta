@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "revistanopauta"
+  },
   "targets": {},
   "etags": {}
 }

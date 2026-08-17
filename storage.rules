@@ -1,20 +1,34 @@
 rules_version = '2';
+
+// Reglas de Storage de Revista No Pauta.
+//
+// Solo se guardan fotos de notas. Se leen publicamente porque se muestran
+// en la web a lectores sin sesion; escribir requiere estar logueado en el
+// panel de redaccion.
+
 service firebase.storage {
   match /b/{bucket}/o {
-    // News images - anyone can read, authenticated users can write
-    match /news/{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+
+    function esRedaccion() {
+      return request.auth != null;
     }
-    
-    // Events images - anyone can read, authenticated users can write
-    match /events/{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+
+    // Hasta 10 MB y solo imagenes: evita que se suba cualquier cosa.
+    function esFotoValida() {
+      return request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
     }
-    
-    // Default rule - deny all other paths
-    match /{allPaths=**} {
+
+    // Fotos de las notas. Lectura publica: se muestran en la portada,
+    // en las notas y en las previsualizaciones de WhatsApp y Facebook.
+    match /news/{archivo=**} {
+      allow read: if true;
+      allow write: if esRedaccion() && esFotoValida();
+    }
+
+    // Todo lo demas queda cerrado.
+    match /{rutas=**} {
       allow read, write: if false;
     }
   }
