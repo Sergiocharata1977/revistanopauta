@@ -1,95 +1,138 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { Menu, Search, X } from 'lucide-react'
 
-import { BrandLogo } from '@/components/brand-logo'
+import { cn } from '@/lib/utils'
+import { seccionesNav, siteConfig } from '@/lib/site-config'
+import { Masthead } from '@/components/diario/masthead'
+import { UltimoMomento } from '@/components/diario/ultimo-momento'
 
-const links = [
-  ['Inicio', '/#inicio'],
-  ['Servicios', '/#servicios'],
-  ['Empresas', '/#empresas'],
-  ['Individuos', '/#personas'],
-  ['Preguntas', '/#preguntas-frecuentes'],
-  ['Contacto', '/#contacto'],
-]
+type HeaderProps = {
+  /** La portada usa el logotipo grande; el resto de las paginas, el chico. */
+  variante?: 'tapa' | 'interior'
+}
 
-export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export function Header({ variante = 'interior' }: HeaderProps) {
+  const [menuAbierto, setMenuAbierto] = useState(false)
+  const [scrolleado, setScrolleado] = useState(false)
+  const pathname = usePathname()
+
+  // El logotipo compacto solo aparece en la barra fija una vez que el
+  // masthead grande salio de pantalla.
+  useEffect(() => {
+    const alScrollear = () => setScrolleado(window.scrollY > 140)
+    alScrollear()
+    window.addEventListener('scroll', alScrollear, { passive: true })
+    return () => window.removeEventListener('scroll', alScrollear)
+  }, [])
+
+  useEffect(() => {
+    setMenuAbierto(false)
+  }, [pathname])
+
+  const esSeccionActiva = (slug: string) => pathname === `/secciones/${slug}`
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <BrandLogo compact className="max-w-[220px] sm:max-w-none" />
+    <header>
+      <UltimoMomento />
+      <Masthead tamano={variante} />
 
-        <nav className="hidden items-center gap-7 md:flex">
-          {links.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className="border-b border-transparent py-1 text-xs font-medium text-slate-600 transition-colors hover:border-emerald-500 hover:text-slate-950"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-2 md:flex">
+      {/* Barra de secciones: se fija arriba al desplazarse. */}
+      <div className="sticky top-0 z-50 border-b border-filete bg-papel/97 backdrop-blur supports-[backdrop-filter]:bg-papel/90">
+        <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-4 sm:px-6">
+          {/* Marca compacta, revelada al scrollear. */}
           <Link
-            href="/login"
-            className="border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 transition-colors hover:border-emerald-500 hover:text-emerald-700"
+            href="/"
+            aria-hidden={!scrolleado}
+            tabIndex={scrolleado ? 0 : -1}
+            className={cn(
+              'shrink-0 font-display text-sm font-black uppercase leading-none tracking-tight text-tinta transition-all duration-200',
+              scrolleado
+                ? 'max-w-[140px] opacity-100'
+                : 'pointer-events-none max-w-0 overflow-hidden opacity-0'
+            )}
           >
-            Login
+            {siteConfig.tipo} <span className="text-rojo">{siteConfig.marca}</span>
           </Link>
-          <Link
-            href="/#contacto"
-            className="bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-600"
-          >
-            Solicitar Consulta
-          </Link>
-        </div>
 
-        <button
-          type="button"
-          className="inline-flex h-9 w-9 items-center justify-center border border-slate-200 text-slate-900 md:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Abrir menu"
-        >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="border-t border-slate-200 bg-white px-4 py-4 md:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3">
-            {links.map(([label, href]) => (
+          <nav className="hidden flex-1 items-center justify-center lg:flex">
+            {seccionesNav.map((s) => (
               <Link
-                key={href}
-                href={href}
-                className="text-sm font-medium text-slate-700"
-                onClick={() => setMobileMenuOpen(false)}
+                key={s.slug}
+                href={`/secciones/${s.slug}`}
+                className={cn(
+                  'border-b-2 px-3.5 py-3 text-[11px] font-bold uppercase tracking-[0.13em] transition-colors',
+                  esSeccionActiva(s.slug)
+                    ? 'border-rojo text-rojo'
+                    : 'border-transparent text-tinta-2 hover:border-tinta hover:text-tinta'
+                )}
               >
-                {label}
+                {s.nombre}
               </Link>
             ))}
+          </nav>
+
+          <div className="ml-auto flex shrink-0 items-center gap-1.5 lg:ml-0">
             <Link
-              href="/#contacto"
-              className="mt-2 bg-slate-950 px-4 py-2 text-center text-xs font-semibold text-white"
-              onClick={() => setMobileMenuOpen(false)}
+              href="/noticias"
+              aria-label="Buscar en el archivo"
+              className="grid h-8 w-8 place-items-center text-tinta-2 transition-colors hover:text-rojo"
             >
-              Solicitar Consulta
+              <Search className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="border border-slate-300 bg-white px-4 py-2 text-center text-xs font-semibold text-slate-800"
-              onClick={() => setMobileMenuOpen(false)}
+              className="hidden border border-filete px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-tinta-2 transition-colors hover:border-tinta hover:text-tinta sm:inline-block"
             >
-              Login
+              Redaccion
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setMenuAbierto(!menuAbierto)}
+              aria-label="Abrir menu de secciones"
+              aria-expanded={menuAbierto}
+              className="grid h-8 w-8 place-items-center text-tinta lg:hidden"
+            >
+              {menuAbierto ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
-      )}
+
+        {menuAbierto && (
+          <div className="border-t border-filete bg-papel lg:hidden">
+            <nav className="mx-auto grid max-w-[1280px] grid-cols-2 gap-px bg-filete px-0 sm:grid-cols-3">
+              {seccionesNav.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/secciones/${s.slug}`}
+                  className={cn(
+                    'bg-papel px-4 py-3 text-[11px] font-bold uppercase tracking-[0.13em]',
+                    esSeccionActiva(s.slug) ? 'text-rojo' : 'text-tinta-2'
+                  )}
+                >
+                  {s.nombre}
+                </Link>
+              ))}
+              <Link
+                href="/noticias"
+                className="bg-papel px-4 py-3 text-[11px] font-bold uppercase tracking-[0.13em] text-tinta-2"
+              >
+                Archivo
+              </Link>
+              <Link
+                href="/login"
+                className="bg-papel px-4 py-3 text-[11px] font-bold uppercase tracking-[0.13em] text-tinta-2"
+              >
+                Redaccion
+              </Link>
+            </nav>
+          </div>
+        )}
+      </div>
     </header>
   )
 }

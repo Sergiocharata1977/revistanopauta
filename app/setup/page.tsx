@@ -89,7 +89,7 @@ export default function SetupPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="admin@jorgericardobade.com.ar"
+                                placeholder="redaccion@diariopauta.com.ar"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required

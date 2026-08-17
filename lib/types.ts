@@ -11,6 +11,16 @@ export interface User {
     isActive: boolean;
 }
 
+/**
+ * Jerarquia editorial: define que lugar ocupa la nota en la portada.
+ * Reemplaza al viejo criterio de "ordenar por fecha".
+ */
+export type JerarquiaPortada =
+    | 'apertura'    // nota principal, una sola por portada
+    | 'destacada'   // bloque secundario con foto
+    | 'breve'       // columna lateral de titulos
+    | 'normal';     // solo aparece en su seccion y en /noticias
+
 export interface News {
     id: string;
     title: string;
@@ -23,6 +33,32 @@ export interface News {
     createdAt: string;
     updatedAt: string;
     tags?: string[];
+
+    // ---- Campos editoriales (Diario Pauta) ----
+    /** Slug de seccion definido en lib/site-config.ts */
+    seccion?: string;
+    /** URL amigable: /noticias/independencia-periodistica */
+    slug?: string;
+    /** Volanta: linea corta que va ARRIBA del titulo. */
+    volanta?: string;
+    /** Bajada: parrafo de entrada que va DEBAJO del titulo. */
+    bajada?: string;
+    /** Epigrafe de la foto principal. */
+    epigrafe?: string;
+    /** Credito fotografico. */
+    creditoFoto?: string;
+    /** Cargo o rol del autor, para la firma. */
+    autorCargo?: string;
+    /** Posicion en la portada. Por defecto 'normal'. */
+    jerarquia?: JerarquiaPortada;
+    /** Orden manual dentro de la jerarquia (menor = mas arriba). */
+    ordenPortada?: number;
+    /** Marca la nota como columna de opinion firmada. */
+    esOpinion?: boolean;
+    /** Minutos estimados de lectura. */
+    tiempoLectura?: number;
+    /** Se muestra en la barra roja de ultimo momento. */
+    urgente?: boolean;
 }
 
 export interface Event {

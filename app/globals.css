@@ -4,86 +4,126 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Tema Minimalista: Blanco predominante con negro/gris para texto */
-  --background: oklch(1 0 0);
-  /* Blanco puro */
-  --foreground: oklch(0.15 0.01 240);
-  /* Negro/gris muy oscuro */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.01 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.01 240);
-  --primary: oklch(0.18 0.01 240);
-  /* Negro con tinte azulado sutil */
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.005 240);
-  /* Gris muy claro */
-  --secondary-foreground: oklch(0.18 0.01 240);
-  --muted: oklch(0.96 0.005 240);
-  --muted-foreground: oklch(0.45 0.01 240);
-  --accent: oklch(0.55 0.2 250);
-  /* Azul sutil para detalles */
-  --accent-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.92 0.005 240);
-  --input: oklch(0.92 0.005 240);
-  --ring: oklch(0.18 0.01 240);
-  --chart-1: oklch(0.18 0.01 240);
-  --chart-2: oklch(0.45 0.01 240);
-  --chart-3: oklch(0.55 0.2 250);
-  --chart-4: oklch(0.6 0.05 240);
-  --chart-5: oklch(0.4 0.06 240);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground: oklch(0.15 0.01 240);
-  --sidebar-primary: oklch(0.18 0.01 240);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.96 0.005 240);
-  --sidebar-accent-foreground: oklch(0.15 0.01 240);
-  --sidebar-border: oklch(0.92 0.005 240);
-  --sidebar-ring: oklch(0.18 0.01 240);
+  /* ============================================================
+     DIARIO PAUTA - Sistema visual "papel y tinta"
+     Papel calido, tinta negra, rojo editorial para urgencia.
+     ============================================================ */
+
+  /* Tokens crudos de marca */
+  --pauta-papel: #ffffff;
+  --pauta-papel-2: #f7f5f0;
+  /* Crema: fondos de bloques secundarios */
+  --pauta-papel-3: #efece4;
+  --pauta-tinta: #12100e;
+  /* Negro calido, no #000: imita tinta sobre papel */
+  --pauta-tinta-2: #3d3936;
+  --pauta-tinta-3: #6b655e;
+  --pauta-filete: #ddd8d0;
+  /* Filetes: las lineas que separan columnas */
+  --pauta-filete-fuerte: #12100e;
+  --pauta-rojo: #c1272d;
+  /* Rojo editorial: ultimo momento, seccion activa */
+  --pauta-rojo-oscuro: #96181d;
+
+  /* Mapeo a los tokens de shadcn/ui (no renombrar: los usa components/ui) */
+  --background: var(--pauta-papel);
+  --foreground: var(--pauta-tinta);
+  --card: var(--pauta-papel);
+  --card-foreground: var(--pauta-tinta);
+  --popover: var(--pauta-papel);
+  --popover-foreground: var(--pauta-tinta);
+  --primary: var(--pauta-tinta);
+  --primary-foreground: var(--pauta-papel);
+  --secondary: var(--pauta-papel-2);
+  --secondary-foreground: var(--pauta-tinta);
+  --muted: var(--pauta-papel-2);
+  --muted-foreground: var(--pauta-tinta-3);
+  --accent: var(--pauta-rojo);
+  --accent-foreground: #ffffff;
+  --destructive: var(--pauta-rojo-oscuro);
+  --destructive-foreground: #ffffff;
+  --border: var(--pauta-filete);
+  --input: var(--pauta-filete);
+  --ring: var(--pauta-rojo);
+  --chart-1: var(--pauta-rojo);
+  --chart-2: var(--pauta-tinta);
+  --chart-3: var(--pauta-tinta-3);
+  --chart-4: #a8a099;
+  --chart-5: var(--pauta-rojo-oscuro);
+
+  /* Un diario no tiene esquinas redondeadas. */
+  --radius: 0rem;
+
+  --sidebar: var(--pauta-tinta);
+  --sidebar-foreground: #f4f2ee;
+  --sidebar-primary: var(--pauta-rojo);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #24211e;
+  --sidebar-accent-foreground: #f4f2ee;
+  --sidebar-border: #2f2b28;
+  --sidebar-ring: var(--pauta-rojo);
 }
 
 .dark {
-  --background: oklch(0.12 0.01 240);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.15 0.01 240);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.15 0.01 240);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.98 0 0);
-  --primary-foreground: oklch(0.15 0.01 240);
-  --secondary: oklch(0.25 0.01 240);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.25 0.01 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.55 0.2 250);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.28 0.01 240);
-  --input: oklch(0.28 0.01 240);
-  --ring: oklch(0.55 0.2 250);
-  --chart-1: oklch(0.55 0.2 250);
-  --chart-2: oklch(0.6 0.1 240);
-  --chart-3: oklch(0.45 0.02 240);
-  --chart-4: oklch(0.5 0.05 240);
-  --chart-5: oklch(0.4 0.08 240);
-  --sidebar: oklch(0.15 0.01 240);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.55 0.2 250);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.25 0.01 240);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.28 0.01 240);
-  --sidebar-ring: oklch(0.55 0.2 250);
+  --pauta-papel: #14120f;
+  --pauta-papel-2: #1c1a16;
+  --pauta-papel-3: #24211c;
+  --pauta-tinta: #f4f2ee;
+  --pauta-tinta-2: #d6d1c9;
+  --pauta-tinta-3: #a09a91;
+  --pauta-filete: #302c27;
+  --pauta-filete-fuerte: #f4f2ee;
+  --pauta-rojo: #e04a4f;
+  --pauta-rojo-oscuro: #c1272d;
+
+  --background: var(--pauta-papel);
+  --foreground: var(--pauta-tinta);
+  --card: var(--pauta-papel-2);
+  --card-foreground: var(--pauta-tinta);
+  --popover: var(--pauta-papel-2);
+  --popover-foreground: var(--pauta-tinta);
+  --primary: var(--pauta-tinta);
+  --primary-foreground: var(--pauta-papel);
+  --secondary: var(--pauta-papel-2);
+  --secondary-foreground: var(--pauta-tinta);
+  --muted: var(--pauta-papel-2);
+  --muted-foreground: var(--pauta-tinta-3);
+  --accent: var(--pauta-rojo);
+  --accent-foreground: #14120f;
+  --destructive: var(--pauta-rojo);
+  --destructive-foreground: #ffffff;
+  --border: var(--pauta-filete);
+  --input: var(--pauta-filete);
+  --ring: var(--pauta-rojo);
+  --sidebar: #0e0c0a;
+  --sidebar-foreground: #f4f2ee;
+  --sidebar-primary: var(--pauta-rojo);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #24211c;
+  --sidebar-accent-foreground: #f4f2ee;
+  --sidebar-border: #302c27;
+  --sidebar-ring: var(--pauta-rojo);
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback', system-ui, sans-serif;
-  --font-serif: 'Georgia', 'Times New Roman', serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  /* Playfair para masthead y titulares, Source Serif para cuerpo,
+     Inter para volantas / navegacion / metadatos. */
+  --font-display: var(--font-playfair), 'Georgia', 'Times New Roman', serif;
+  --font-serif: var(--font-source-serif), 'Georgia', 'Times New Roman', serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', monospace;
+
+  --color-papel: var(--pauta-papel);
+  --color-papel-2: var(--pauta-papel-2);
+  --color-papel-3: var(--pauta-papel-3);
+  --color-tinta: var(--pauta-tinta);
+  --color-tinta-2: var(--pauta-tinta-2);
+  --color-tinta-3: var(--pauta-tinta-3);
+  --color-filete: var(--pauta-filete);
+  --color-filete-fuerte: var(--pauta-filete-fuerte);
+  --color-rojo: var(--pauta-rojo);
+  --color-rojo-oscuro: var(--pauta-rojo-oscuro);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -108,10 +148,10 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -129,5 +169,144 @@
 
   body {
     @apply bg-background text-foreground;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+
+  /* ---- Titulares ---------------------------------------------------- */
+
+  /* Un titular de diario es apretado: interlineado corto, tracking negativo. */
+  .titular {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.021em;
+    text-wrap: balance;
+  }
+
+  /* Volanta: la linea chica que va ARRIBA del titulo, en versalitas. */
+  .volanta {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pauta-rojo);
+  }
+
+  /* Metadatos: firma, fecha, tiempo de lectura. */
+  .meta {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pauta-tinta-3);
+  }
+
+  /* ---- Cuerpo de nota ------------------------------------------------ */
+
+  .cuerpo-nota {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    color: var(--pauta-tinta-2);
+  }
+
+  .cuerpo-nota p + p {
+    margin-top: 1.15em;
+  }
+
+  /* Capitular: la letra grande que abre la nota principal. */
+  .cuerpo-nota.con-capitular > p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-weight: 700;
+    float: left;
+    font-size: 3.6em;
+    line-height: 0.78;
+    padding-right: 0.08em;
+    padding-top: 0.06em;
+    color: var(--pauta-tinta);
+  }
+
+  /* ---- Filetes (las reglas que separan bloques) ---------------------- */
+
+  /* Filete grueso: encabeza secciones, como en la primera plana impresa. */
+  .filete-seccion {
+    border-top: 3px solid var(--pauta-filete-fuerte);
+  }
+
+  .filete-fino {
+    border-top: 1px solid var(--pauta-filete);
+  }
+
+  /* Columna con linea divisoria a la izquierda, estilo pagina impresa. */
+  .columna-filete {
+    border-left: 1px solid var(--pauta-filete);
+  }
+
+  /* ---- Utilidades varias --------------------------------------------- */
+
+  /* Recorte a N lineas para titulares en grillas. */
+  .lineas-2,
+  .lineas-3,
+  .lineas-4 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .lineas-2 {
+    -webkit-line-clamp: 2;
+  }
+
+  .lineas-3 {
+    -webkit-line-clamp: 3;
+  }
+
+  .lineas-4 {
+    -webkit-line-clamp: 4;
+  }
+
+  /* Foto levemente desaturada que gana color al pasar el mouse. */
+  .foto-nota {
+    filter: grayscale(0.18) contrast(1.04);
+    transition: filter 300ms ease, transform 400ms ease;
+  }
+
+  .grupo-nota:hover .foto-nota {
+    filter: grayscale(0) contrast(1);
+    transform: scale(1.02);
+  }
+}
+
+/* Marquesina de ultimo momento. */
+@keyframes pauta-marquesina {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquesina {
+  animation: pauta-marquesina 38s linear infinite;
+}
+
+.marquesina:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquesina {
+    animation: none;
+  }
+
+  .foto-nota {
+    transition: none;
   }
 }
